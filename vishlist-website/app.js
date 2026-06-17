@@ -302,6 +302,17 @@ document.addEventListener('DOMContentLoaded', () => {
     initProductDetail();
     loadContent();
     updateCartCount();
+    
+    // Hide loader after everything loads
+    setTimeout(() => {
+        const loader = document.getElementById('loader');
+        if (loader) {
+            loader.classList.add('hidden');
+            setTimeout(() => {
+                loader.style.display = 'none';
+            }, 800);
+        }
+    }, 2500);
 });
 
 // Navigation

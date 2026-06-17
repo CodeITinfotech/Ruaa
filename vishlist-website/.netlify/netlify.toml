@@ -7,8 +7,9 @@ redirects = []
 [functions."*"]
 
 [build]
-publish = "/workspace/project/Ruaa"
-publishOrigin = "default"
+publish = "/workspace/project/Ruaa/vishlist-website"
+publishOrigin = "config"
+base = "/workspace/project/Ruaa/vishlist-website"
 
 [build.environment]
 
