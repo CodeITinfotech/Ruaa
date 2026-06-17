@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruaa - Where Fashion Meets You</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Announcement Bar -->
+    <div class="announcement-bar">
+        <div class="announcement-scroll">
+            <span>Free shipping for all orders within India**</span>
+            <span class="separator">|</span>
+            <span>We ship worldwide</span>
+            <span class="separator">|</span>
+            <span>Free shipping for all orders within India**</span>
+            <span class="separator">|</span>
+            <span>We ship worldwide</span>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <a href="#" class="logo" data-page="home">
+                <span class="logo-text">Ruaa</span>
+            </a>
+
+            <nav class="nav-desktop" id="desktopNav">
+                <ul class="nav-list">
+                    <li><a href="#" class="nav-link active" data-page="home">Home</a></li>
+                    <li><a href="#" class="nav-link" data-page="about">About us</a></li>
+                    <li><a href="#" class="nav-link" data-page="products">All products</a></li>
+                    <li><a href="#" class="nav-link" data-page="pakistani-lawn">Pakistani Lawn Suits</a></li>
+                    <li><a href="#" class="nav-link" data-page="pakistani-formals">Pakistani Formals</a></li>
+                    <li><a href="#" class="nav-link" data-page="co-ord-sets">Pakistani Co-ord Sets</a></li>
+                    <li><a href="#" class="nav-link" data-page="farshi-salwar">Farshi Salwar Suits</a></li>
+                    <li><a href="#" class="nav-link" data-page="dubai-dresses">Dubai Dresses</a></li>
+                    <li><a href="#" class="nav-link" data-page="contact">Contact</a></li>
+                </ul>
+            </nav>
+
+            <div class="header-actions">
+                <button class="search-btn" id="searchBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+                <a href="#" class="login-btn" data-page="login">Log in</a>
+                <a href="#" class="cart-btn" id="cartBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <path d="M16 10a4 4 0 0 1-8 0"></path>
+                    </svg>
+                    <span class="cart-count" id="cartCount">0</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav" id="mobileNav">
+        <ul class="mobile-nav-list">
+            <li><a href="#" data-page="home">Home</a></li>
+            <li><a href="#" data-page="about">About us</a></li>
+            <li><a href="#" data-page="products">All products</a></li>
+            <li><a href="#" data-page="pakistani-lawn">Pakistani Lawn Suits</a></li>
+            <li><a href="#" data-page="pakistani-formals">Pakistani Formals</a></li>
+            <li><a href="#" data-page="co-ord-sets">Pakistani Co-ord Sets</a></li>
+            <li><a href="#" data-page="farshi-salwar">Farshi Salwar Suits</a></li>
+            <li><a href="#" data-page="dubai-dresses">Dubai Dresses</a></li>
+            <li><a href="#" data-page="contact">Contact</a></li>
+        </ul>
+    </div>
+
+    <!-- Search Modal -->
+    <div class="search-modal" id="searchModal">
+        <div class="search-modal-content">
+            <input type="text" placeholder="Search for products..." class="search-input">
+            <button class="search-close" id="searchClose">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main id="mainContent">
+        <!-- Home Page -->
+        <div class="page active" id="page-home">
+            <!-- Hero Slider -->
+            <section class="hero-slider">
+                <div class="slider-container">
+                    <div class="slide active">
+                        <img src="https://thevishlist.com/cdn/shop/files/Colorful_Bold_Happy_Republic_Day_India_Banner_1_1500x.gif?v=1769547533" alt="Republic Day Sale" class="slide-image">
+                    </div>
+                    <div class="slide">
+                        <img src="https://thevishlist.com/cdn/shop/files/White_Orange_Minimal_Indian_Republic_Day_Sale_Instagram_Post_1000_x_2000_px_1500x.gif?v=1769542950" alt="Republic Day Collection" class="slide-image vertical">
+                    </div>
+                </div>
+                <div class="slider-nav">
+                    <button class="slider-dot active" data-slide="0"></button>
+                    <button class="slider-dot" data-slide="1"></button>
+                </div>
+            </section>
+
+            <!-- New Arrivals Section -->
+            <section class="section products-section">
+                <div class="section-header">
+                    <h2 class="section-title">New Arrivals</h2>
+                    <a href="#" class="section-link" data-page="new-arrivals">View all</a>
+                </div>
+                <div class="products-grid" id="newArrivalsGrid"></div>
+            </section>
+
+            <!-- Best Sellers Section -->
+            <section class="section products-section alt-bg">
+                <div class="section-header">
+                    <h2 class="section-title">Best Sellers</h2>
+                    <a href="#" class="section-link" data-page="best-sellers">View all</a>
+                </div>
+                <div class="products-grid" id="bestSellersGrid"></div>
+            </section>
+
+            <!-- Explore Categories -->
+            <section class="section categories-section">
+                <div class="section-header">
+                    <h2 class="section-title">Explore Ruaa</h2>
+                </div>
+                <div class="categories-grid" id="categoriesGrid"></div>
+            </section>
+
+            <!-- Newsletter Section -->
+            <section class="section newsletter-section">
+                <div class="newsletter-container">
+                    <h2 class="newsletter-title">Subscribe to our emails</h2>
+                    <form class="newsletter-form" id="newsletterForm">
+                        <input type="email" placeholder="Email" required class="newsletter-input">
+                        <button type="submit" class="newsletter-btn">Subscribe</button>
+                    </form>
+                </div>
+            </section>
+        </div>
+
+        <!-- About Page -->
+        <div class="page" id="page-about">
+            <div class="page-container">
+                <h1 class="page-title">About us</h1>
+                <div class="about-hero">
+                    <img src="https://thevishlist.com/cdn/shop/files/F4A1EE6E-F1F2-453C-BBA1-10FEE16A487D.jpg?v=1707070974&width=600" alt="Ruaa" class="about-hero-image">
+                </div>
+                <div class="about-content">
+                    <h2 class="about-section-title">VISHLIST</h2>
+                    <p class="about-text">Welcome to Ruaa, where style meets sophistication and every fit tells a story. We are more than just a fashion brand; we are a celebration of <strong>individuality</strong>, <strong>confidence</strong> and the <strong>timeless elegance</strong> that resides within every woman.</p>
+                    <p class="about-text">Ruaa curates a collection that redefines the narrative of female clothing, offering a diverse range that caters to the multifaceted personalities and lifestyles of modern women. From casual chic <strong>Indo-western wear</strong> to our beautiful <strong>Pakistani Collection</strong>, our range of clothing is as diverse as the women who wear them.</p>
+                    <p class="about-text">At the heart of our brand is a commitment to quality craftsmanship and attention to detail. We are proud to have served <strong>50,000+</strong> <strong>customers</strong> with our design solutions! Our team is dedicated to delivering quality work and outstanding customer service.</p>
+                </div>
+                <div class="founder-section">
+                    <h2 class="about-section-title">THE FOUNDER</h2>
+                    <div class="founder-content">
+                        <img src="https://cdn.shopify.com/s/files/1/0588/1122/0038/files/F07ECBD9-7004-47A4-85E8-B9BA3658CE8F_480x480.jpg?v=1707853975" alt="Mavish Banducda" class="founder-image">
+                        <div class="founder-text">
+                            <p>With the passion to empower women through fashion, <strong>Mavish Banducda</strong> found <strong>Ruaa</strong> at the tender age of 21. With dreams in her eyes, love for fashion in her heart and a determined mind, she began her entrepreneurial journey all by herself.</p>
+                            <p>Mavish, a simple cheerful girl from <strong>Goa</strong>, aims to break the cycle of overpriced designer outfits, giving every woman her dream outfit at <strong>budget friendly prices</strong>.</p>
+                            <p class="founder-signature">Join us in this journey of celebrating the beautiful individual that you are.</p>
+                            <p class="founder-tagline"><em>Welcome to Ruaa - Where Fashion Meets You!</em></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Page -->
+        <div class="page" id="page-contact">
+            <div class="page-container">
+                <h1 class="page-title">Contact</h1>
+                <div class="contact-content">
+                    <form class="contact-form" id="contactForm">
+                        <div class="form-group">
+                            <label for="contactName">Name</label>
+                            <input type="text" id="contactName" name="name" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label for="contactEmail">Email *</label>
+                            <input type="email" id="contactEmail" name="email" required class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label for="contactPhone">Phone number</label>
+                            <input type="tel" id="contactPhone" name="phone" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label for="contactComment">Comment</label>
+                            <textarea id="contactComment" name="comment" rows="5" class="form-input"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Page -->
+        <div class="page" id="page-products">
+            <div class="page-container">
+                <h1 class="page-title">All Products</h1>
+                <div class="products-grid" id="allProductsGrid"></div>
+            </div>
+        </div>
+
+        <!-- Product Detail Page -->
+        <div class="page" id="page-product-detail">
+            <div class="page-container">
+                <div class="product-detail">
+                    <div class="product-gallery">
+                        <div class="gallery-main">
+                            <img src="" alt="" class="gallery-main-image" id="galleryMainImage">
+                        </div>
+                        <div class="gallery-thumbs" id="galleryThumbs"></div>
+                    </div>
+                    <div class="product-info">
+                        <h1 class="product-title" id="productTitle"></h1>
+                        <div class="product-price" id="productPrice"></div>
+                        <div class="product-size-selector">
+                            <label>Size</label>
+                            <div class="size-options" id="sizeOptions"></div>
+                        </div>
+                        <div class="product-quantity">
+                            <label>Quantity</label>
+                            <div class="quantity-selector">
+                                <button class="qty-btn" id="qtyMinus">-</button>
+                                <input type="number" value="1" min="1" class="qty-input" id="qtyInput">
+                                <button class="qty-btn" id="qtyPlus">+</button>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary btn-add-cart" id="addToCartBtn">Add to cart</button>
+                        <button class="btn btn-secondary">Buy it now</button>
+                        <div class="product-description" id="productDescription"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cart Page -->
+        <div class="page" id="page-cart">
+            <div class="page-container">
+                <h1 class="page-title">Your cart</h1>
+                <div class="cart-content" id="cartContent"></div>
+            </div>
+        </div>
+
+        <!-- Login Page -->
+        <div class="page" id="page-login">
+            <div class="page-container">
+                <div class="login-container">
+                    <h1 class="page-title">Log in</h1>
+                    <p class="login-text">Customer login</p>
+                    <form class="login-form" id="loginForm">
+                        <div class="form-group">
+                            <label for="loginEmail">Email</label>
+                            <input type="email" id="loginEmail" required class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword">Password</label>
+                            <input type="password" id="loginPassword" required class="form-input">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Log in</button>
+                    </form>
+                    <p class="login-link">Don't have an account? <a href="#">Create one</a></p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-newsletter">
+                <h3>Subscribe to our emails</h3>
+                <form class="footer-newsletter-form">
+                    <input type="email" placeholder="Email" class="footer-newsletter-input">
+                    <button type="submit" class="footer-newsletter-btn">Subscribe</button>
+                </form>
+            </div>
+            <div class="footer-payment">
+                <span class="payment-label">Payment methods</span>
+                <div class="payment-icons">
+                    <span class="payment-icon">VISA</span>
+                    <span class="payment-icon">MC</span>
+                    <span class="payment-icon">AMEX</span>
+                    <span class="payment-icon">UPI</span>
+                </div>
+            </div>
+            <div class="footer-copyright">
+                <p>© 2026, Ruaa</p>
+                <p class="powered-by">Powered by Shopify</p>
+            </div>
+            <div class="footer-links">
+                <a href="#">Refund policy</a>
+                <span>|</span>
+                <a href="#">Privacy policy</a>
+                <span>|</span>
+                <a href="#">Terms of service</a>
+                <span>|</span>
+                <a href="#">Shipping policy</a>
+                <span>|</span>
+                <a href="#">Contact information</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <span class="toast-message" id="toastMessage"></span>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
