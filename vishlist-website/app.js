@@ -1,453 +1,259 @@
-// Ruaa - E-Commerce Application
+// ===== RUAA E-COMMERCE - FULL APP =====
 
-// Product Data
-const products = [
-    // New Arrivals
-    {
-        id: 1,
-        name: "Shifa Pakistani Farshi Salwar Suit 11",
-        price: 1650,
-        originalPrice: null,
-        images: [
-            "https://thevishlist.com/cdn/shop/files/0BE8D51F-5406-4517-8499-396F73BEDA3D.jpg?v=1781429428&width=533",
-            "https://thevishlist.com/cdn/shop/files/2A637DB8-864A-4584-9CE3-FE8F72C91D99.jpg?v=1781429428&width=533",
-            "https://thevishlist.com/cdn/shop/files/02D2AE07-1636-4EA5-96E9-175FED467046.jpg?v=1781429428&width=533"
-        ],
-        sizes: [
-            { name: "Free size upto M", available: true },
-            { name: "L (Chest 40)", available: false },
-            { name: "XL (Chest 42)", available: false },
-            { name: "XXL (Chest 44)", available: false }
-        ],
-        description: "Get ready to rock the summer in style with the <strong>Shifa Pakistani Farshi Salwar Suit.</strong> This fully stitched farshi salwar suit is crafted from breathable cotton and paired with a beautiful self-work dupatta, keeping you cool while you turn heads.",
-        category: "new-arrivals",
-        soldOut: false
+// ===== DATA & STATE =====
+let storeData = {
+    settings: {
+        storeName: 'Ruaa',
+        tagline: 'Fashion Meets You',
+        adminPassword: 'admin123'
     },
-    {
-        id: 2,
-        name: "Shifa Pakistani Suit 10",
-        price: 1850,
-        originalPrice: null,
-        images: [
-            "https://thevishlist.com/cdn/shop/files/F49FC180-D506-4C16-8E58-655D4FC236E5.jpg?v=1781429428&width=533"
-        ],
-        sizes: [
-            { name: "Free size upto M", available: true }
-        ],
-        description: "Elegant Pakistani suit crafted with premium fabric for a sophisticated look.",
-        category: "new-arrivals",
-        soldOut: false
+    homepage: {
+        announcement: 'Free shipping for all orders within India | We ship worldwide',
+        announcementEnabled: true,
+        newArrivalsTitle: 'New Arrivals',
+        bestSellersTitle: 'Best Sellers',
+        categoriesTitle: 'Shop by Category',
+        heroSliders: [
+            { image: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1600', link: '' },
+            { image: 'https://images.unsplash.com/photo-1445205170230-053b83016050?w=1600', link: '' }
+        ]
     },
-    {
-        id: 3,
-        name: "Shifa Pakistani Farshi Salwar Suit 09",
-        price: 1950,
-        originalPrice: null,
-        images: [
-            "https://thevishlist.com/cdn/shop/files/11F5A3BD-405F-4FC0-B8EF-919EBCD57322.jpg?v=1781429428&width=533"
-        ],
-        sizes: [
-            { name: "Free size upto M", available: true }
-        ],
-        description: "Stunning farshi salwar suit perfect for festive occasions.",
-        category: "new-arrivals",
-        soldOut: false
-    },
-    {
-        id: 4,
-        name: "Shifa Pakistani Farshi Salwar Suit 08",
-        price: 1950,
-        originalPrice: null,
-        images: [
-            "https://thevishlist.com/cdn/shop/files/E1083C7D-03C2-40A8-B0F3-98542300642E.jpg?v=1781429428&width=533"
-        ],
-        sizes: [
-            { name: "Free size upto M", available: true }
-        ],
-        description: "Beautiful farshi salwar suit with intricate detailing.",
-        category: "new-arrivals",
-        soldOut: false
-    },
-    {
-        id: 5,
-        name: "Shifa Pakistani A-line Suit 07",
-        price: 2499,
-        originalPrice: null,
-        images: [
-            "https://thevishlist.com/cdn/shop/files/D2FC03E3-A374-42B2-8AE9-AC8076371A99.jpg?v=1781429429&width=533"
-        ],
-        sizes: [
-            { name: "Free size upto M", available: true }
-        ],
-        description: "Chic A-line suit for the modern woman.",
-        category: "new-arrivals",
-        soldOut: true
-    },
-    {
-        id: 6,
-        name: "Shifa Pakistani A-line Suit 06",
-        price: 2499,
-        originalPrice: null,
-        images: [
-            "https://thevishlist.com/cdn/shop/files/CE3668C3-BF7D-4056-9C21-3C74EAA50478.jpg?v=1781429428&width=533"
-        ],
-        sizes: [
-            { name: "Free size upto M", available: true }
-        ],
-        description: "Elegant A-line silhouette with premium fabric.",
-        category: "new-arrivals",
-        soldOut: true
-    },
-    {
-        id: 7,
-        name: "Shifa Pakistani Farshi Salwar Suit 05",
-        price: 1499,
-        originalPrice: null,
-        images: [
-            "https://thevishlist.com/cdn/shop/files/FDA5A7A5-35B4-46D5-8DE4-5FD3B34ACFAE.jpg?v=1781429428&width=533"
-        ],
-        sizes: [
-            { name: "Free size upto M", available: true }
-        ],
-        description: "Budget-friendly farshi salwar suit with style.",
-        category: "new-arrivals",
-        soldOut: false
-    },
-    {
-        id: 8,
-        name: "Shifa Pakistani Farshi Salwar Suit 04",
-        price: 1499,
-        originalPrice: null,
-        images: [
-            "https://thevishlist.com/cdn/shop/files/37B162DC-8502-483C-A219-43EFDC265592.jpg?v=1781429428&width=533"
-        ],
-        sizes: [
-            { name: "Free size upto M", available: true }
-        ],
-        description: "Classic farshi salwar suit design.",
-        category: "new-arrivals",
-        soldOut: true
-    },
-    // Best Sellers
-    {
-        id: 9,
-        name: "Mahenoor Pakistani Formal Set 01",
-        price: 2250,
-        originalPrice: null,
-        images: [
-            "https://thevishlist.com/cdn/shop/files/78BF4754-E289-4F0C-9101-A2641FB20FB7.jpg?v=1756638758&width=533"
-        ],
-        sizes: [
-            { name: "Free size upto M", available: true }
-        ],
-        description: "Premium formal set for special occasions.",
-        category: "best-sellers",
-        soldOut: false
-    },
-    {
-        id: 10,
-        name: "Dananeer Pakistani Luxe Lawn Set 05",
-        price: 2350,
-        originalPrice: null,
-        images: [
-            "https://thevishlist.com/cdn/shop/files/400357B0-56E2-457A-8A39-76CD04DD43B8.jpg?v=1773332093&width=533"
-        ],
-        sizes: [
-            { name: "Free size upto M", available: true }
-        ],
-        description: "Luxe lawn collection for summer elegance.",
-        category: "best-sellers",
-        soldOut: false
-    },
-    {
-        id: 11,
-        name: "Anah Pakistani Lawn Set 06",
-        price: 2350,
-        originalPrice: null,
-        images: [
-            "https://thevishlist.com/cdn/shop/files/C8F430AE-E52D-4B00-8828-B70BB0DAF935.jpg?v=1768478044&width=533"
-        ],
-        sizes: [
-            { name: "Free size upto M", available: true }
-        ],
-        description: "Beautiful lawn set with delicate embroidery.",
-        category: "best-sellers",
-        soldOut: false
-    },
-    {
-        id: 12,
-        name: "Shafa Pakistani Farshi Salwar Set 05",
-        price: 2250,
-        originalPrice: null,
-        images: [
-            "https://thevishlist.com/cdn/shop/files/1A2E82FC-79CF-47CE-8640-EE9B1A894267.jpg?v=1772802213&width=533"
-        ],
-        sizes: [
-            { name: "Free size upto M", available: true }
-        ],
-        description: "Trendy farshi salwar set with modern design.",
-        category: "best-sellers",
-        soldOut: false
-    },
-    {
-        id: 13,
-        name: "Masoom Pakistani Lawn Set 01",
-        price: 1950,
-        originalPrice: null,
-        images: [
-            "https://thevishlist.com/cdn/shop/files/901375C2-2214-484B-9D4D-0EF0D1EA15CD.jpg?v=1769944805&width=533"
-        ],
-        sizes: [
-            { name: "Free size upto M", available: true }
-        ],
-        description: "Classic lawn set for everyday elegance.",
-        category: "best-sellers",
-        soldOut: false
-    },
-    {
-        id: 14,
-        name: "Masoom Pakistani Lawn Set 02",
-        price: 1950,
-        originalPrice: null,
-        images: [
-            "https://thevishlist.com/cdn/shop/files/7C4E14CE-BCD5-4173-B973-11300B33DA32.jpg?v=1769944704&width=533"
-        ],
-        sizes: [
-            { name: "Free size upto M", available: true }
-        ],
-        description: "Elegant lawn set with subtle detailing.",
-        category: "best-sellers",
-        soldOut: false
-    },
-    {
-        id: 15,
-        name: "Sonal Pakistani Formal Set 01",
-        price: 1950,
-        originalPrice: 2250,
-        images: [
-            "https://thevishlist.com/cdn/shop/files/EBBFD8B9-D878-4184-9654-21B69F9F65EF.jpg?v=1773157666&width=533"
-        ],
-        sizes: [
-            { name: "Free size upto M", available: true }
-        ],
-        description: "Formal set with 13% OFF - limited time offer!",
-        category: "best-sellers",
-        soldOut: false,
-        discount: 13
-    },
-    {
-        id: 16,
-        name: "Zifra Pakistani Formal Set 06",
-        price: 2499,
-        originalPrice: null,
-        images: [
-            "https://thevishlist.com/cdn/shop/files/060E43C4-757B-4DD1-B6C5-EE93CB5146A8.jpg?v=1773071990&width=533"
-        ],
-        sizes: [
-            { name: "Free size upto M", available: true }
-        ],
-        description: "Premium formal set with intricate work.",
-        category: "best-sellers",
-        soldOut: false
+    products: [
+        {
+            id: 1,
+            name: 'Elegant Lawn Suit',
+            price: 2499,
+            originalPrice: 2999,
+            category: 'new-arrivals',
+            image: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=600',
+            images: [],
+            description: 'Beautiful Pakistani lawn suit with intricate embroidery. Perfect for summer occasions.',
+            sizes: ['S', 'M', 'L', 'XL'],
+            status: 'in-stock'
+        },
+        {
+            id: 2,
+            name: 'Premium Formal Set',
+            price: 3999,
+            originalPrice: null,
+            category: 'best-sellers',
+            image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600',
+            images: [],
+            description: 'Elegant formal set for special occasions.',
+            sizes: ['M', 'L', 'XL'],
+            status: 'in-stock'
+        },
+        {
+            id: 3,
+            name: 'Designer Co-ord Set',
+            price: 3299,
+            originalPrice: 3999,
+            category: 'new-arrivals',
+            image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600',
+            images: [],
+            description: 'Trendy co-ord set for the modern woman.',
+            sizes: ['S', 'M', 'L'],
+            status: 'on-sale'
+        },
+        {
+            id: 4,
+            name: 'Classic Silk Suit',
+            price: 5499,
+            originalPrice: null,
+            category: 'best-sellers',
+            image: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600',
+            images: [],
+            description: 'Premium silk suit with hand embroidery.',
+            sizes: ['M', 'L'],
+            status: 'sold-out'
+        },
+        {
+            id: 5,
+            name: 'Casual Farshi Salwar',
+            price: 1899,
+            originalPrice: null,
+            category: 'new-arrivals',
+            image: 'https://images.unsplash.com/photo-1612216039984-8952374d0c59?w=600',
+            images: [],
+            description: 'Comfortable farshi salwar for everyday wear.',
+            sizes: ['S', 'M', 'L', 'XL', 'XXL'],
+            status: 'in-stock'
+        },
+        {
+            id: 6,
+            name: 'Bridal Collection',
+            price: 8999,
+            originalPrice: 9999,
+            category: 'best-sellers',
+            image: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=600',
+            images: [],
+            description: 'Exquisite bridal wear with heavy embellishments.',
+            sizes: ['M', 'L', 'XL'],
+            status: 'on-sale'
+        }
+    ],
+    categories: [
+        { id: 1, name: 'Lawn Suits', image: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=600' },
+        { id: 2, name: 'Formal Sets', image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600' },
+        { id: 3, name: 'Co-ord Sets', image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600' },
+        { id: 4, name: 'Silk Suits', image: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600' }
+    ],
+    pages: {
+        about: {
+            title: 'About Us',
+            image: 'https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=800',
+            content: 'Welcome to Ruaa, where style meets sophistication. We are a premium fashion brand dedicated to bringing you the finest Pakistani suits and ethnic wear.',
+            founderImage: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400',
+            founderText: 'Founded by a passionate entrepreneur, Ruaa aims to make luxury fashion accessible to everyone.'
+        },
+        contact: {
+            title: 'Contact Us',
+            info: '<p>We would love to hear from you!</p><p>Email: hello@ruaa.com</p><p>Phone: +91 98765 43210</p><p>Address: Mumbai, India</p>'
+        }
     }
-];
+};
 
-// Categories Data
-const categories = [
-    {
-        id: 1,
-        name: "Pakistani Lawn Suits",
-        image: "https://thevishlist.com/cdn/shop/files/0BE8D51F-5406-4517-8499-396F73BEDA3D.jpg?v=1781429428&width=1500",
-        link: "pakistani-lawn"
-    },
-    {
-        id: 2,
-        name: "Pakistani Formals",
-        image: "https://thevishlist.com/cdn/shop/files/99578ED4-41C3-4369-BE0A-BF31C76A45B8.jpg?v=1780832730&width=1500",
-        link: "pakistani-formals"
-    },
-    {
-        id: 3,
-        name: "Co-ord Sets",
-        image: "https://thevishlist.com/cdn/shop/files/0BE8D51F-5406-4517-8499-396F73BEDA3D.jpg?v=1781429428&width=1500",
-        link: "co-ord-sets"
-    },
-    {
-        id: 4,
-        name: "Indo Western Collection",
-        image: "https://thevishlist.com/cdn/shop/files/184B2312-527B-48A1-A03A-2C4D607BB51B.jpg?v=1768734895&width=1500",
-        link: "indo-western"
-    },
-    {
-        id: 5,
-        name: "Pakistani Silk Suits",
-        image: "https://thevishlist.com/cdn/shop/files/99578ED4-41C3-4369-BE0A-BF31C76A45B8.jpg?v=1780832730&width=1500",
-        link: "silk-suits"
-    }
-];
-
-// Cart State
-let cart = JSON.parse(localStorage.getItem('vishlist-cart')) || [];
+let cart = JSON.parse(localStorage.getItem('ruaa-cart')) || [];
 let currentProduct = null;
 let selectedSize = null;
+let isAdminLoggedIn = false;
+let editingProductId = null;
+let editingCategoryId = null;
 
-// Initialize App
+// ===== INITIALIZATION =====
 document.addEventListener('DOMContentLoaded', () => {
-    initNavigation();
-    initSlider();
-    initMobileMenu();
-    initSearch();
-    initNewsletter();
-    initCart();
-    initProductDetail();
-    loadContent();
-    updateCartCount();
+    loadStoreData();
+    initCustomer();
+    initAdmin();
     
     // Hide loader after 2 seconds
     setTimeout(() => {
-        const loader = document.getElementById('loader');
+        const loader = document.getElementById('loader') || document.querySelector('.loader');
         if (loader) {
             loader.classList.add('hidden');
-            setTimeout(() => {
-                loader.style.display = 'none';
-            }, 500);
+            setTimeout(() => loader.style.display = 'none', 500);
         }
     }, 2000);
 });
 
-// Navigation
+// ===== DATA PERSISTENCE =====
+function loadStoreData() {
+    const saved = localStorage.getItem('ruaa-store-data');
+    if (saved) {
+        storeData = JSON.parse(saved);
+    } else {
+        saveStoreData();
+    }
+}
+
+function saveStoreData() {
+    localStorage.setItem('ruaa-store-data', JSON.stringify(storeData));
+}
+
+// ===== CUSTOMER FUNCTIONS =====
+function initCustomer() {
+    initNavigation();
+    initMobileMenu();
+    initSearch();
+    initCart();
+    loadCustomerContent();
+    updateCartCount();
+}
+
 function initNavigation() {
     document.querySelectorAll('[data-page]').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
-            const page = e.target.dataset.page;
-            navigateTo(page);
+            navigateTo(link.dataset.page);
         });
     });
 }
 
 function navigateTo(page) {
-    // Hide all pages
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
     
-    // Update nav links
-    document.querySelectorAll('.nav-link').forEach(link => {
-        link.classList.remove('active');
-        if (link.dataset.page === page) {
-            link.classList.add('active');
-        }
-    });
-    
-    // Show target page
     const targetPage = document.getElementById(`page-${page}`);
     if (targetPage) {
         targetPage.classList.add('active');
+        document.querySelectorAll(`.nav-link[data-page="${page}"]`).forEach(l => l.classList.add('active'));
         window.scrollTo(0, 0);
     }
     
-    // Close mobile menu
-    document.getElementById('mobileNav').classList.remove('active');
+    closeMobileMenu();
+    closeSearch();
 }
 
-// Slider
-function initSlider() {
-    const dots = document.querySelectorAll('.slider-dot');
-    const slides = document.querySelectorAll('.slide');
-    let currentSlide = 0;
-    
-    dots.forEach((dot, index) => {
-        dot.addEventListener('click', () => {
-            currentSlide = index;
-            updateSlider();
-        });
-    });
-    
-    function updateSlider() {
-        slides.forEach((slide, i) => {
-            slide.classList.toggle('active', i === currentSlide);
-        });
-        dots.forEach((dot, i) => {
-            dot.classList.toggle('active', i === currentSlide);
-        });
-    }
-    
-    // Auto-advance
-    setInterval(() => {
-        currentSlide = (currentSlide + 1) % slides.length;
-        updateSlider();
-    }, 5000);
-}
-
-// Mobile Menu
 function initMobileMenu() {
     const btn = document.getElementById('mobileMenuBtn');
     const nav = document.getElementById('mobileNav');
+    const close = document.getElementById('mobileClose');
     
-    btn.addEventListener('click', () => {
-        nav.classList.toggle('active');
-    });
-    
-    // Close on link click
+    if (btn) btn.addEventListener('click', () => nav.classList.add('active'));
+    if (close) close.addEventListener('click', () => nav.classList.remove('active'));
     nav.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', () => {
-            nav.classList.remove('active');
-        });
+        link.addEventListener('click', () => nav.classList.remove('active'));
     });
 }
 
-// Search
+function closeMobileMenu() {
+    const nav = document.getElementById('mobileNav');
+    if (nav) nav.classList.remove('active');
+}
+
 function initSearch() {
-    const searchBtn = document.getElementById('searchBtn');
-    const searchModal = document.getElementById('searchModal');
-    const searchClose = document.getElementById('searchClose');
+    const btn = document.getElementById('searchBtn');
+    const modal = document.getElementById('searchModal');
+    const close = document.getElementById('searchClose');
+    const input = document.getElementById('searchInput');
+    const results = document.getElementById('searchResults');
     
-    searchBtn.addEventListener('click', () => {
-        searchModal.classList.add('active');
-        searchModal.querySelector('.search-input').focus();
-    });
+    if (btn) btn.addEventListener('click', () => modal.classList.add('active'));
+    if (close) close.addEventListener('click', () => modal.classList.remove('active'));
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
     
-    searchClose.addEventListener('click', () => {
-        searchModal.classList.remove('active');
-    });
-    
-    searchModal.addEventListener('click', (e) => {
-        if (e.target === searchModal) {
-            searchModal.classList.remove('active');
-        }
-    });
-}
-
-// Newsletter
-function initNewsletter() {
-    const forms = document.querySelectorAll('.newsletter-form, .footer-newsletter-form');
-    
-    forms.forEach(form => {
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const input = form.querySelector('input[type="email"]');
-            if (input.value) {
-                showToast('Successfully subscribed!');
-                input.value = '';
+    if (input) {
+        input.addEventListener('input', () => {
+            const query = input.value.toLowerCase();
+            if (query.length > 1) {
+                const matches = storeData.products.filter(p => 
+                    p.name.toLowerCase().includes(query)
+                );
+                results.innerHTML = matches.map(p => `
+                    <div class="product-card" onclick="showProduct(${p.id})">
+                        <img src="${p.image}" alt="${p.name}">
+                        <div class="product-info">
+                            <h3>${p.name}</h3>
+                            <p>₹${p.price.toLocaleString()}</p>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                results.innerHTML = '';
             }
         });
-    });
+    }
 }
 
-// Cart
+function closeSearch() {
+    const modal = document.getElementById('searchModal');
+    if (modal) modal.classList.remove('active');
+}
+
 function initCart() {
-    document.getElementById('cartBtn').addEventListener('click', (e) => {
+    document.getElementById('cartBtn')?.addEventListener('click', (e) => {
         e.preventDefault();
         navigateTo('cart');
         renderCart();
     });
     
-    document.getElementById('contactForm').addEventListener('submit', (e) => {
+    document.getElementById('contactForm')?.addEventListener('submit', (e) => {
         e.preventDefault();
         showToast('Message sent successfully!');
         e.target.reset();
     });
     
-    document.getElementById('loginForm').addEventListener('submit', (e) => {
+    document.getElementById('loginForm')?.addEventListener('submit', (e) => {
         e.preventDefault();
         showToast('Login functionality coming soon!');
     });
@@ -455,118 +261,195 @@ function initCart() {
 
 function updateCartCount() {
     const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-    document.getElementById('cartCount').textContent = count;
+    const cartCount = document.getElementById('cartCount');
+    if (cartCount) cartCount.textContent = count;
 }
 
-function addToCart(productId, size, quantity) {
-    const product = products.find(p => p.id === productId);
-    if (!product) return;
-    
-    const existingItem = cart.find(item => item.id === productId && item.size === size);
-    
-    if (existingItem) {
-        existingItem.quantity += quantity;
+function addToCart(productId, size, quantity = 1) {
+    const existing = cart.find(item => item.id === productId && item.size === size);
+    if (existing) {
+        existing.quantity += quantity;
     } else {
-        cart.push({
-            id: productId,
-            size: size,
-            quantity: quantity
-        });
+        cart.push({ id: productId, size, quantity });
     }
-    
-    localStorage.setItem('vishlist-cart', JSON.stringify(cart));
+    localStorage.setItem('ruaa-cart', JSON.stringify(cart));
     updateCartCount();
     showToast('Added to cart!');
 }
 
 function removeFromCart(productId, size) {
     cart = cart.filter(item => !(item.id === productId && item.size === size));
-    localStorage.setItem('vishlist-cart', JSON.stringify(cart));
+    localStorage.setItem('ruaa-cart', JSON.stringify(cart));
     updateCartCount();
     renderCart();
 }
 
-// Product Detail
-function initProductDetail() {
-    document.getElementById('qtyMinus').addEventListener('click', () => {
-        const input = document.getElementById('qtyInput');
-        input.value = Math.max(1, parseInt(input.value) - 1);
-    });
+function renderCart() {
+    const container = document.getElementById('cartContent');
+    if (!container) return;
     
-    document.getElementById('qtyPlus').addEventListener('click', () => {
-        const input = document.getElementById('qtyInput');
-        input.value = parseInt(input.value) + 1;
-    });
-    
-    document.getElementById('addToCartBtn').addEventListener('click', () => {
-        if (currentProduct && selectedSize) {
-            const quantity = parseInt(document.getElementById('qtyInput').value);
-            addToCart(currentProduct.id, selectedSize, quantity);
-        } else {
-            showToast('Please select a size');
-        }
-    });
-}
-
-// Load Content
-function loadContent() {
-    loadNewArrivals();
-    loadBestSellers();
-    loadCategories();
-    loadAllProducts();
-}
-
-function loadNewArrivals() {
-    const grid = document.getElementById('newArrivalsGrid');
-    const newArrivals = products.filter(p => p.category === 'new-arrivals');
-    grid.innerHTML = newArrivals.map(product => createProductCard(product)).join('');
-}
-
-function loadBestSellers() {
-    const grid = document.getElementById('bestSellersGrid');
-    const bestSellers = products.filter(p => p.category === 'best-sellers');
-    grid.innerHTML = bestSellers.map(product => createProductCard(product)).join('');
-}
-
-function loadCategories() {
-    const grid = document.getElementById('categoriesGrid');
-    grid.innerHTML = categories.map(category => `
-        <div class="category-card" data-page="${category.link}">
-            <img src="${category.image}" alt="${category.name}">
-            <div class="category-overlay">
-                <h3 class="category-title">${category.name}</h3>
+    if (cart.length === 0) {
+        container.innerHTML = `
+            <div class="cart-empty">
+                <h2>Your cart is empty</h2>
+                <p>Add items to your cart</p>
+                <a href="#" class="btn btn-primary" data-page="products">Shop Now</a>
             </div>
-        </div>
-    `).join('');
+        `;
+        return;
+    }
     
-    // Add click handlers
-    grid.querySelectorAll('.category-card').forEach(card => {
-        card.addEventListener('click', () => {
-            navigateTo('products');
+    let total = 0;
+    const items = cart.map(item => {
+        const product = storeData.products.find(p => p.id === item.id);
+        if (!product) return '';
+        const subtotal = product.price * item.quantity;
+        total += subtotal;
+        return `
+            <div class="cart-item">
+                <img src="${product.image}" alt="${product.name}" class="cart-item-image">
+                <div class="cart-item-info">
+                    <h3>${product.name}</h3>
+                    <p>Size: ${item.size}</p>
+                    <p>Qty: ${item.quantity}</p>
+                </div>
+                <div class="cart-item-price">
+                    <p>₹${subtotal.toLocaleString()}</p>
+                    <button class="cart-item-remove" onclick="removeFromCart(${item.id}, '${item.size}')">Remove</button>
+                </div>
+            </div>
+        `;
+    }).join('');
+    
+    container.innerHTML = `
+        <a href="#" class="section-link" data-page="products" style="display:inline-block;margin-bottom:24px;">← Continue Shopping</a>
+        ${items}
+        <div class="cart-summary">
+            <p><strong>Total:</strong> ₹${total.toLocaleString()}</p>
+            <button class="btn btn-primary">Checkout</button>
+        </div>
+    `;
+    
+    container.querySelectorAll('[data-page]').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            navigateTo(link.dataset.page);
         });
     });
 }
 
-function loadAllProducts() {
-    const grid = document.getElementById('allProductsGrid');
-    grid.innerHTML = products.map(product => createProductCard(product)).join('');
+function showProduct(productId) {
+    const product = storeData.products.find(p => p.id === productId);
+    if (!product) return;
+    
+    currentProduct = product;
+    selectedSize = product.sizes[0];
+    
+    document.getElementById('galleryMainImage').src = product.image;
+    document.getElementById('galleryMainImage').alt = product.name;
+    document.getElementById('productTitle').textContent = product.name;
+    
+    const priceHTML = product.originalPrice
+        ? `<span class="original">₹${product.originalPrice.toLocaleString()}</span> <span class="sale">₹${product.price.toLocaleString()}</span>`
+        : `₹${product.price.toLocaleString()}`;
+    document.getElementById('productPrice').innerHTML = priceHTML;
+    document.getElementById('productDescription').innerHTML = product.description || '';
+    
+    const sizesHTML = product.sizes.map((size, i) => 
+        `<button class="size-option ${i === 0 ? 'active' : ''}" onclick="selectSize('${size}', this)">${size}</button>`
+    ).join('');
+    document.getElementById('sizeOptions').innerHTML = sizesHTML;
+    
+    document.getElementById('qtyInput').value = 1;
+    
+    document.getElementById('addToCartBtn').onclick = () => {
+        if (currentProduct && selectedSize) {
+            const qty = parseInt(document.getElementById('qtyInput').value);
+            addToCart(currentProduct.id, selectedSize, qty);
+        }
+    };
+    
+    navigateTo('product');
+}
+
+function selectSize(size, btn) {
+    document.querySelectorAll('.size-option').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedSize = size;
+}
+
+function loadCustomerContent() {
+    // Update brand settings
+    document.getElementById('logoText').textContent = storeData.settings.storeName;
+    document.getElementById('footerLogo').textContent = storeData.settings.storeName;
+    document.getElementById('footerTagline').textContent = storeData.settings.tagline;
+    document.getElementById('footerBrand').textContent = storeData.settings.storeName;
+    document.getElementById('footerYear').textContent = new Date().getFullYear();
+    document.title = `${storeData.settings.storeName} - ${storeData.settings.tagline}`;
+    
+    // Announcement
+    const announcementBar = document.getElementById('announcementBar');
+    if (announcementBar) {
+        announcementBar.style.display = storeData.homepage.announcementEnabled ? 'block' : 'none';
+        document.getElementById('announcementText').innerHTML = storeData.homepage.announcement.replace(/\|/g, '<span class="separator">|</span>');
+    }
+    
+    // Hero Sliders
+    const sliderContainer = document.getElementById('heroSlides');
+    const sliderNav = document.getElementById('sliderNav');
+    if (sliderContainer) {
+        sliderContainer.innerHTML = storeData.homepage.heroSliders.map((slide, i) => 
+            `<div class="slide ${i === 0 ? 'active' : ''}"><img src="${slide.image}" alt="Slide ${i+1}" class="slide-image"></div>`
+        ).join('');
+        sliderNav.innerHTML = storeData.homepage.heroSliders.map((_, i) => 
+            `<button class="slider-dot ${i === 0 ? 'active' : ''}" data-slide="${i}"></button>`
+        ).join('');
+        
+        initSlider();
+    }
+    
+    // Section Titles
+    document.getElementById('newArrivalsTitle').textContent = storeData.homepage.newArrivalsTitle;
+    document.getElementById('bestSellersTitle').textContent = storeData.homepage.bestSellersTitle;
+    document.getElementById('categoriesTitle').textContent = storeData.homepage.categoriesTitle;
+    
+    // Products
+    loadProducts();
+    
+    // Categories
+    loadCategories();
+    
+    // Pages
+    loadPages();
+}
+
+function loadProducts() {
+    const newArrivals = storeData.products.filter(p => p.category === 'new-arrivals');
+    const bestSellers = storeData.products.filter(p => p.category === 'best-sellers');
+    const allProducts = storeData.products;
+    
+    document.getElementById('newArrivalsGrid').innerHTML = newArrivals.map(p => createProductCard(p)).join('');
+    document.getElementById('bestSellersGrid').innerHTML = bestSellers.map(p => createProductCard(p)).join('');
+    document.getElementById('allProductsGrid').innerHTML = allProducts.map(p => createProductCard(p)).join('');
 }
 
 function createProductCard(product) {
-    const badge = product.soldOut ? 
-        '<span class="product-badge sold-out">Sold out</span>' :
-        product.discount ?
-        `<span class="product-badge discount">${product.discount}% OFF</span>` : '';
+    let badge = '';
+    if (product.status === 'sold-out') badge = '<span class="product-badge sold-out">Sold Out</span>';
+    else if (product.status === 'on-sale') badge = '<span class="product-badge on-sale">On Sale</span>';
+    else if (product.originalPrice) {
+        const discount = Math.round((1 - product.price / product.originalPrice) * 100);
+        badge = `<span class="product-badge discount">${discount}% OFF</span>`;
+    }
     
-    const priceHTML = product.originalPrice ?
-        `<span class="original">Rs. ${product.originalPrice.toLocaleString()}.00</span>
-         <span class="sale">Rs. ${product.price.toLocaleString()}.00</span>` :
-        `<span>Rs. ${product.price.toLocaleString()}.00</span>`;
+    const priceHTML = product.originalPrice
+        ? `<span class="original">₹${product.originalPrice.toLocaleString()}</span> <span class="sale">₹${product.price.toLocaleString()}</span>`
+        : `₹${product.price.toLocaleString()}`;
     
     return `
-        <div class="product-card" data-product-id="${product.id}">
+        <div class="product-card" onclick="showProduct(${product.id})">
             <div class="product-image-container">
-                <img src="${product.images[0]}" alt="${product.name}" class="product-image">
+                <img src="${product.image}" alt="${product.name}" class="product-image" loading="lazy">
                 ${badge}
             </div>
             <div class="product-info">
@@ -577,134 +460,450 @@ function createProductCard(product) {
     `;
 }
 
-function renderCart() {
-    const cartContent = document.getElementById('cartContent');
-    
-    if (cart.length === 0) {
-        cartContent.innerHTML = `
-            <div class="cart-empty">
-                <h2>Your cart is empty</h2>
-                <p>Add items to your cart to checkout</p>
-                <a href="#" class="btn btn-primary" data-page="products">Continue shopping</a>
+function loadCategories() {
+    document.getElementById('categoriesGrid').innerHTML = storeData.categories.map(cat => `
+        <div class="category-card" onclick="navigateTo('products')">
+            <img src="${cat.image}" alt="${cat.name}" loading="lazy">
+            <div class="category-overlay">
+                <h3 class="category-title">${cat.name}</h3>
             </div>
-        `;
+        </div>
+    `).join('');
+}
+
+function loadPages() {
+    const about = storeData.pages.about;
+    document.getElementById('aboutPageTitle').textContent = about.title;
+    document.getElementById('aboutImage').src = about.image;
+    document.getElementById('aboutContent').innerHTML = `
+        <h2 class="about-section-title">Our Story</h2>
+        <p class="about-text">${about.content}</p>
+    `;
+    document.getElementById('founderImage').src = about.founderImage;
+    document.getElementById('founderText').innerHTML = about.founderText.split('. ').map(p => `<p class="about-text">${p}</p>`).join('');
+    
+    const contact = storeData.pages.contact;
+    document.getElementById('contactPageTitle').textContent = contact.title;
+    document.getElementById('contactInfo').innerHTML = contact.info;
+}
+
+function initSlider() {
+    const dots = document.querySelectorAll('.slider-dot');
+    const slides = document.querySelectorAll('.slide');
+    let currentSlide = 0;
+    
+    dots.forEach((dot, i) => {
+        dot.addEventListener('click', () => {
+            currentSlide = i;
+            updateSlider();
+        });
+    });
+    
+    function updateSlider() {
+        slides.forEach((s, i) => s.classList.toggle('active', i === currentSlide));
+        dots.forEach((d, i) => d.classList.toggle('active', i === currentSlide));
+    }
+    
+    setInterval(() => {
+        currentSlide = (currentSlide + 1) % slides.length;
+        updateSlider();
+    }, 5000);
+}
+
+// ===== ADMIN FUNCTIONS =====
+function initAdmin() {
+    // Check if admin was logged in
+    if (sessionStorage.getItem('ruaa-admin') === 'true') {
+        isAdminLoggedIn = true;
+        showAdminPanel();
+    }
+    
+    // Admin Login
+    document.getElementById('adminLoginForm')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const password = document.getElementById('adminPasswordInput').value;
+        if (password === storeData.settings.adminPassword) {
+            isAdminLoggedIn = true;
+            sessionStorage.setItem('ruaa-admin', 'true');
+            document.getElementById('adminLoginModal').classList.remove('active');
+            showAdminPanel();
+            showToast('Welcome to Admin Panel!');
+        } else {
+            showToast('Incorrect password!');
+        }
+    });
+    
+    // Admin Navigation
+    document.querySelectorAll('.admin-nav li').forEach(item => {
+        item.addEventListener('click', () => {
+            const section = item.dataset.section;
+            showAdminSection(section);
+        });
+    });
+    
+    // Admin Header Buttons
+    document.getElementById('viewSiteBtn')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        hideAdminPanel();
+    });
+    
+    document.getElementById('adminLogout')?.addEventListener('click', () => {
+        isAdminLoggedIn = false;
+        sessionStorage.removeItem('ruaa-admin');
+        hideAdminPanel();
+        showToast('Logged out');
+    });
+    
+    // Admin Mobile Menu
+    document.getElementById('adminMenuToggle')?.addEventListener('click', () => {
+        document.getElementById('adminSidebar').classList.toggle('active');
+    });
+    
+    // Product Form
+    document.getElementById('productForm')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        saveProduct();
+    });
+    
+    // Category Form
+    document.getElementById('categoryForm')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        saveCategory();
+    });
+}
+
+function showAdminPanel() {
+    document.getElementById('customerSite').style.display = 'none';
+    document.getElementById('adminPanel').style.display = 'flex';
+    loadAdminData();
+}
+
+function hideAdminPanel() {
+    document.getElementById('adminPanel').style.display = 'none';
+    document.getElementById('customerSite').style.display = 'block';
+}
+
+function showAdminSection(section) {
+    document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.admin-nav li').forEach(l => l.classList.remove('active'));
+    
+    document.getElementById(`section-${section}`)?.classList.add('active');
+    document.querySelector(`.admin-nav li[data-section="${section}"]`)?.classList.add('active');
+    
+    // Close mobile sidebar
+    document.getElementById('adminSidebar').classList.remove('active');
+}
+
+function loadAdminData() {
+    // Stats
+    document.getElementById('statProducts').textContent = storeData.products.length;
+    document.getElementById('statCategories').textContent = storeData.categories.length;
+    document.getElementById('statOrders').textContent = cart.length;
+    
+    // Homepage
+    document.getElementById('adminAnnouncement').value = storeData.homepage.announcement;
+    document.getElementById('adminAnnouncementEnabled').checked = storeData.homepage.announcementEnabled;
+    document.getElementById('adminNewArrivalsTitle').value = storeData.homepage.newArrivalsTitle;
+    document.getElementById('adminBestSellersTitle').value = storeData.homepage.bestSellersTitle;
+    document.getElementById('adminCategoriesTitle').value = storeData.homepage.categoriesTitle;
+    
+    // Hero Sliders Admin
+    renderHeroSlidersAdmin();
+    
+    // Products
+    renderProductsTable();
+    
+    // Categories
+    renderCategoriesAdmin();
+    
+    // Pages
+    const about = storeData.pages.about;
+    document.getElementById('adminAboutTitle').value = about.title;
+    document.getElementById('adminAboutImage').value = about.image;
+    document.getElementById('adminAboutContent').value = about.content;
+    document.getElementById('adminFounderImage').value = about.founderImage;
+    document.getElementById('adminFounderText').value = about.founderText;
+    
+    const contact = storeData.pages.contact;
+    document.getElementById('adminContactTitle').value = contact.title;
+    document.getElementById('adminContactInfo').value = contact.info;
+    
+    // Settings
+    document.getElementById('adminStoreName').value = storeData.settings.storeName;
+    document.getElementById('adminTagline').value = storeData.settings.tagline;
+}
+
+function renderHeroSlidersAdmin() {
+    const container = document.getElementById('heroSlidersAdmin');
+    container.innerHTML = storeData.homepage.heroSliders.map((slide, i) => `
+        <div class="hero-slide-admin">
+            <img src="${slide.image}" alt="Slide ${i+1}">
+            <div class="info">
+                <input type="text" class="form-input" value="${slide.image}" 
+                    onchange="updateHeroSlide(${i}, 'image', this.value)" placeholder="Image URL">
+            </div>
+            <div class="actions">
+                <button class="btn btn-secondary btn-sm" onclick="deleteHeroSlide(${i})">Delete</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function addHeroSlide() {
+    storeData.homepage.heroSliders.push({
+        image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1600',
+        link: ''
+    });
+    saveStoreData();
+    renderHeroSlidersAdmin();
+    showToast('Slide added!');
+}
+
+function updateHeroSlide(index, field, value) {
+    storeData.homepage.heroSliders[index][field] = value;
+    saveStoreData();
+}
+
+function deleteHeroSlide(index) {
+    if (storeData.homepage.heroSliders.length > 1) {
+        storeData.homepage.heroSliders.splice(index, 1);
+        saveStoreData();
+        renderHeroSlidersAdmin();
+        showToast('Slide deleted!');
+    } else {
+        showToast('Keep at least one slide!');
+    }
+}
+
+function saveHomepageSettings() {
+    storeData.homepage.announcement = document.getElementById('adminAnnouncement').value;
+    storeData.homepage.announcementEnabled = document.getElementById('adminAnnouncementEnabled').checked;
+    storeData.homepage.newArrivalsTitle = document.getElementById('adminNewArrivalsTitle').value;
+    storeData.homepage.bestSellersTitle = document.getElementById('adminBestSellersTitle').value;
+    storeData.homepage.categoriesTitle = document.getElementById('adminCategoriesTitle').value;
+    
+    saveStoreData();
+    loadCustomerContent();
+    showToast('Homepage settings saved!');
+}
+
+function renderProductsTable() {
+    const tbody = document.getElementById('productsTableBody');
+    tbody.innerHTML = storeData.products.map(p => `
+        <tr>
+            <td><img src="${p.image}" alt="${p.name}"></td>
+            <td>${p.name}</td>
+            <td>₹${p.price.toLocaleString()}</td>
+            <td>${p.category}</td>
+            <td><span class="product-badge ${p.status === 'sold-out' ? 'sold-out' : 'on-sale'}">${p.status}</span></td>
+            <td class="actions">
+                <button class="btn btn-edit btn-sm" onclick="editProduct(${p.id})">Edit</button>
+                <button class="btn btn-delete btn-sm" onclick="deleteProduct(${p.id})">Delete</button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function openProductModal(product = null) {
+    editingProductId = product?.id || null;
+    document.getElementById('productModalTitle').textContent = product ? 'Edit Product' : 'Add Product';
+    
+    document.getElementById('productId').value = product?.id || '';
+    document.getElementById('productName').value = product?.name || '';
+    document.getElementById('productPrice').value = product?.price || '';
+    document.getElementById('productOriginalPrice').value = product?.originalPrice || '';
+    document.getElementById('productCategory').value = product?.category || 'new-arrivals';
+    document.getElementById('productImage').value = product?.image || '';
+    document.getElementById('productDescription').value = product?.description || '';
+    document.getElementById('productSizes').value = product?.sizes?.join(', ') || 'S, M, L, XL';
+    document.getElementById('productStatus').value = product?.status || 'in-stock';
+    
+    document.getElementById('productModal').classList.add('active');
+}
+
+function closeProductModal() {
+    document.getElementById('productModal').classList.remove('active');
+    editingProductId = null;
+}
+
+function editProduct(id) {
+    const product = storeData.products.find(p => p.id === id);
+    if (product) openProductModal(product);
+}
+
+function saveProduct() {
+    const name = document.getElementById('productName').value;
+    const price = parseInt(document.getElementById('productPrice').value);
+    const originalPrice = parseInt(document.getElementById('productOriginalPrice').value) || null;
+    const category = document.getElementById('productCategory').value;
+    const image = document.getElementById('productImage').value;
+    const description = document.getElementById('productDescription').value;
+    const sizes = document.getElementById('productSizes').value.split(',').map(s => s.trim()).filter(s => s);
+    const status = document.getElementById('productStatus').value;
+    
+    if (!name || !price || !image) {
+        showToast('Please fill all required fields!');
         return;
     }
     
-    let total = 0;
-    const itemsHTML = cart.map(item => {
-        const product = products.find(p => p.id === item.id);
-        const itemTotal = product.price * item.quantity;
-        total += itemTotal;
-        
-        return `
-            <div class="cart-item">
-                <img src="${product.images[0]}" alt="${product.name}" class="cart-item-image">
-                <div class="cart-item-info">
-                    <h3>${product.name}</h3>
-                    <p>Size: ${item.size}</p>
-                    <p>Qty: ${item.quantity}</p>
-                </div>
-                <div class="cart-item-price">
-                    <p>Rs. ${itemTotal.toLocaleString()}.00</p>
-                    <button onclick="removeFromCart(${item.id}, '${item.size}')" style="background: none; border: none; color: #c44536; cursor: pointer; margin-top: 10px;">Remove</button>
-                </div>
-            </div>
-        `;
-    }).join('');
-    
-    cartContent.innerHTML = `
-        <a href="#" class="section-link" data-page="products" style="display: inline-block; margin-bottom: 30px;">← Continue shopping</a>
-        ${itemsHTML}
-        <div class="cart-summary">
-            <p><strong>Estimated total:</strong> Rs. ${total.toLocaleString()}.00</p>
-            <p style="font-size: 14px; color: #666;">Taxes included. Discounts and shipping calculated at checkout.</p>
-            <button class="btn btn-primary">Check out</button>
-        </div>
-    `;
-}
-
-// Show Product Detail
-function showProductDetail(productId) {
-    const product = products.find(p => p.id === productId);
-    if (!product) return;
-    
-    currentProduct = product;
-    selectedSize = null;
-    
-    // Set images
-    document.getElementById('galleryMainImage').src = product.images[0];
-    document.getElementById('galleryMainImage').alt = product.name;
-    
-    // Set thumbs
-    const thumbs = document.getElementById('galleryThumbs');
-    thumbs.innerHTML = product.images.map((img, i) => `
-        <img src="${img}" alt="${product.name}" class="gallery-thumb ${i === 0 ? 'active' : ''}" onclick="changeImage('${img}', this)">
-    `).join('');
-    
-    // Set info
-    document.getElementById('productTitle').textContent = product.name;
-    
-    const priceHTML = product.originalPrice ?
-        `<span class="original" style="text-decoration: line-through; margin-right: 15px; color: #666;">Rs. ${product.originalPrice.toLocaleString()}.00</span>
-         <span style="color: #c44536;">Rs. ${product.price.toLocaleString()}.00</span>` :
-        `Rs. ${product.price.toLocaleString()}.00`;
-    document.getElementById('productPrice').innerHTML = priceHTML;
-    
-    // Set sizes
-    const sizes = document.getElementById('sizeOptions');
-    sizes.innerHTML = product.sizes.map((size, i) => `
-        <button class="size-option ${!size.available ? 'disabled' : ''} ${i === 0 && size.available ? 'active' : ''}" 
-                ${!size.available ? 'disabled' : ''}
-                onclick="selectSize('${size.name}', this)">
-            ${size.name}
-        </button>
-    `).join('');
-    
-    if (product.sizes[0].available) {
-        selectedSize = product.sizes[0].name;
+    if (editingProductId) {
+        const index = storeData.products.findIndex(p => p.id === editingProductId);
+        if (index !== -1) {
+            storeData.products[index] = {
+                ...storeData.products[index],
+                name, price, originalPrice, category, image, description, sizes, status
+            };
+        }
+    } else {
+        const newProduct = {
+            id: Date.now(),
+            name, price, originalPrice, category, image, images: [], description, sizes, status
+        };
+        storeData.products.push(newProduct);
     }
     
-    // Set description
-    document.getElementById('productDescription').innerHTML = product.description;
+    saveStoreData();
+    loadCustomerContent();
+    renderProductsTable();
+    closeProductModal();
+    showToast('Product saved!');
+}
+
+function deleteProduct(id) {
+    if (confirm('Delete this product?')) {
+        storeData.products = storeData.products.filter(p => p.id !== id);
+        saveStoreData();
+        loadCustomerContent();
+        renderProductsTable();
+        showToast('Product deleted!');
+    }
+}
+
+function renderCategoriesAdmin() {
+    const container = document.getElementById('categoriesAdminGrid');
+    container.innerHTML = storeData.categories.map(cat => `
+        <div class="category-admin-card">
+            <img src="${cat.image}" alt="${cat.name}">
+            <div class="info">
+                <h3>${cat.name}</h3>
+                <div class="actions">
+                    <button class="btn btn-edit btn-sm" onclick="editCategory(${cat.id})">Edit</button>
+                    <button class="btn btn-delete btn-sm" onclick="deleteCategory(${cat.id})">Delete</button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function openCategoryModal(category = null) {
+    editingCategoryId = category?.id || null;
+    document.getElementById('categoryModalTitle').textContent = category ? 'Edit Category' : 'Add Category';
+    document.getElementById('categoryName').value = category?.name || '';
+    document.getElementById('categoryImage').value = category?.image || '';
+    document.getElementById('categoryModal').classList.add('active');
+}
+
+function closeCategoryModal() {
+    document.getElementById('categoryModal').classList.remove('active');
+    editingCategoryId = null;
+}
+
+function editCategory(id) {
+    const category = storeData.categories.find(c => c.id === id);
+    if (category) openCategoryModal(category);
+}
+
+function saveCategory() {
+    const name = document.getElementById('categoryName').value;
+    const image = document.getElementById('categoryImage').value;
     
-    // Reset quantity
-    document.getElementById('qtyInput').value = 1;
+    if (!name || !image) {
+        showToast('Please fill all fields!');
+        return;
+    }
     
-    // Navigate to page
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById('page-product-detail').classList.add('active');
-    window.scrollTo(0, 0);
+    if (editingCategoryId) {
+        const index = storeData.categories.findIndex(c => c.id === editingCategoryId);
+        if (index !== -1) {
+            storeData.categories[index] = { ...storeData.categories[index], name, image };
+        }
+    } else {
+        storeData.categories.push({ id: Date.now(), name, image });
+    }
+    
+    saveStoreData();
+    loadCustomerContent();
+    renderCategoriesAdmin();
+    closeCategoryModal();
+    showToast('Category saved!');
 }
 
-function changeImage(src, thumb) {
-    document.getElementById('galleryMainImage').src = src;
-    document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
-    thumb.classList.add('active');
+function deleteCategory(id) {
+    if (confirm('Delete this category?')) {
+        storeData.categories = storeData.categories.filter(c => c.id !== id);
+        saveStoreData();
+        loadCustomerContent();
+        renderCategoriesAdmin();
+        showToast('Category deleted!');
+    }
 }
 
-function selectSize(size, btn) {
-    document.querySelectorAll('.size-option').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    selectedSize = size;
+function savePagesSettings() {
+    storeData.pages.about = {
+        title: document.getElementById('adminAboutTitle').value,
+        image: document.getElementById('adminAboutImage').value,
+        content: document.getElementById('adminAboutContent').value,
+        founderImage: document.getElementById('adminFounderImage').value,
+        founderText: document.getElementById('adminFounderText').value
+    };
+    
+    storeData.pages.contact = {
+        title: document.getElementById('adminContactTitle').value,
+        info: document.getElementById('adminContactInfo').value
+    };
+    
+    saveStoreData();
+    loadCustomerContent();
+    showToast('Pages saved!');
 }
 
-// Toast Notification
+function saveSettings() {
+    storeData.settings.storeName = document.getElementById('adminStoreName').value;
+    storeData.settings.tagline = document.getElementById('adminTagline').value;
+    
+    const newPassword = document.getElementById('adminNewPassword').value;
+    if (newPassword) {
+        storeData.settings.adminPassword = newPassword;
+        showToast('Password updated!');
+    }
+    
+    saveStoreData();
+    loadCustomerContent();
+    showToast('Settings saved!');
+}
+
+// ===== UTILITY =====
 function showToast(message) {
     const toast = document.getElementById('toast');
     document.getElementById('toastMessage').textContent = message;
     toast.classList.add('show');
-    
-    setTimeout(() => {
-        toast.classList.remove('show');
-    }, 3000);
+    setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
-// Product card click handler
+// Admin access via URL parameter
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('admin') === 'true') {
+    document.getElementById('adminLoginModal').classList.add('active');
+}
+
+// Qty buttons
 document.addEventListener('click', (e) => {
-    const card = e.target.closest('.product-card');
-    if (card) {
-        const productId = parseInt(card.dataset.productId);
-        showProductDetail(productId);
+    if (e.target.id === 'qtyMinus') {
+        const input = document.getElementById('qtyInput');
+        input.value = Math.max(1, parseInt(input.value) - 1);
+    }
+    if (e.target.id === 'qtyPlus') {
+        const input = document.getElementById('qtyInput');
+        input.value = parseInt(input.value) + 1;
     }
 });
