@@ -303,16 +303,16 @@ document.addEventListener('DOMContentLoaded', () => {
     loadContent();
     updateCartCount();
     
-    // Hide loader after everything loads
+    // Hide loader after 2 seconds
     setTimeout(() => {
         const loader = document.getElementById('loader');
         if (loader) {
             loader.classList.add('hidden');
             setTimeout(() => {
                 loader.style.display = 'none';
-            }, 800);
+            }, 500);
         }
-    }, 2500);
+    }, 2000);
 });
 
 // Navigation

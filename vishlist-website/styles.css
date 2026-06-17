@@ -1185,7 +1185,7 @@ textarea.form-input {
     align-items: center;
     justify-content: center;
     z-index: 99999;
-    transition: opacity 0.8s ease, visibility 0.8s ease;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
 }
 
 .loader.hidden {
@@ -1211,7 +1211,7 @@ textarea.form-input {
     display: inline-block;
     opacity: 0;
     transform: translateY(30px) rotateX(90deg);
-    animation: letterReveal 0.6s ease forwards;
+    animation: letterReveal 0.4s ease forwards;
     background: linear-gradient(135deg, #c9a96e 0%, #b8954d 50%, #a07d3a 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -1219,10 +1219,10 @@ textarea.form-input {
     text-shadow: 0 4px 30px rgba(201, 169, 110, 0.3);
 }
 
-.loader-text:nth-child(1) { animation-delay: 0.1s; }
-.loader-text:nth-child(2) { animation-delay: 0.2s; }
-.loader-text:nth-child(3) { animation-delay: 0.3s; }
-.loader-text:nth-child(4) { animation-delay: 0.4s; }
+.loader-text:nth-child(1) { animation-delay: 0.05s; }
+.loader-text:nth-child(2) { animation-delay: 0.1s; }
+.loader-text:nth-child(3) { animation-delay: 0.15s; }
+.loader-text:nth-child(4) { animation-delay: 0.2s; }
 
 @keyframes letterReveal {
     0% {
@@ -1252,9 +1252,8 @@ textarea.form-input {
     height: 100%;
     background: linear-gradient(90deg, #c9a96e, #b8954d, #a07d3a, #c9a96e);
     background-size: 300% 100%;
-    animation: shimmer 1.5s ease-in-out infinite;
+    animation: shimmer 1s ease-in-out infinite, loadingBar 1.5s ease forwards;
     width: 0%;
-    animation: loadingBar 2s ease forwards, shimmer 1.5s ease-in-out infinite;
 }
 
 @keyframes loadingBar {
@@ -1273,8 +1272,8 @@ textarea.form-input {
     font-style: italic;
     color: var(--text-light);
     opacity: 0;
-    animation: fadeInUp 0.8s ease forwards;
-    animation-delay: 0.8s;
+    animation: fadeInUp 0.5s ease forwards;
+    animation-delay: 0.6s;
     letter-spacing: 3px;
 }
 
