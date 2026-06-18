@@ -599,7 +599,7 @@ function loadCustomerContent() {
                 <div class="slide-content">
                     <h2 class="slide-title">${slideTitles[i] || 'Welcome'}</h2>
                     <p class="slide-subtitle">${slideSubtitles[i] || ''}</p>
-                    <a href="#" class="btn" data-page="products">Shop Now</a>
+                    <a href="#" class="btn" onclick="event.preventDefault();navigateTo('products')">Shop Now</a>
                 </div>
             </div>`
         ).join('');
@@ -1139,3 +1139,172 @@ document.addEventListener('click', (e) => {
         input.value = parseInt(input.value) + 1;
     }
 });
+
+// ===== IMAGE UPLOAD & PROCESSING =====
+let currentCropImage = null;
+let currentCropCanvas = null;
+
+function initImageUpload() {
+    const uploadArea = document.getElementById('imageUploadArea');
+    const uploadInput = document.getElementById('imageUploadInput');
+    
+    if (!uploadArea || !uploadInput) return;
+    
+    uploadArea.addEventListener('click', () => uploadInput.click());
+    
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('dragover');
+    });
+    
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('dragover');
+    });
+    
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+        const file = e.dataTransfer.files[0];
+        if (file && file.type.startsWith('image/')) {
+            processImageUpload(file);
+        }
+    });
+    
+    uploadInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            processImageUpload(file);
+        }
+    });
+    
+    renderUploadedImages();
+}
+
+function processImageUpload(file) {
+    if (file.size > 5 * 1024 * 1024) {
+        showToast('Image too large! Max 5MB allowed.');
+        return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+            openCropModal(img);
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+function openCropModal(img) {
+    const modal = document.getElementById('cropModal');
+    const cropImg = document.getElementById('cropImage');
+    
+    // Create canvas for processing
+    currentCropCanvas = document.createElement('canvas');
+    const ctx = currentCropCanvas.getContext('2d');
+    
+    // Set canvas size (max 1200px for optimization)
+    const maxSize = 1200;
+    let width = img.width;
+    let height = img.height;
+    
+    if (width > maxSize || height > maxSize) {
+        if (width > height) {
+            height = (height / width) * maxSize;
+            width = maxSize;
+        } else {
+            width = (width / height) * maxSize;
+            height = maxSize;
+        }
+    }
+    
+    currentCropCanvas.width = width;
+    currentCropCanvas.height = height;
+    ctx.drawImage(img, 0, 0, width, height);
+    
+    currentCropImage = img;
+    cropImg.src = currentCropCanvas.toDataURL('image/jpeg', 0.9);
+    modal.classList.add('active');
+}
+
+function closeCropModal() {
+    const modal = document.getElementById('cropModal');
+    modal.classList.remove('active');
+    currentCropImage = null;
+    currentCropCanvas = null;
+}
+
+function cropAndSaveImage() {
+    if (!currentCropCanvas) return;
+    
+    // Create square crop from center
+    const size = Math.min(currentCropCanvas.width, currentCropCanvas.height);
+    const cropCanvas = document.createElement('canvas');
+    cropCanvas.width = 800; // Standard size for web
+    cropCanvas.height = 800;
+    const ctx = cropCanvas.getContext('2d');
+    
+    // Center crop
+    const sx = (currentCropCanvas.width - size) / 2;
+    const sy = (currentCropCanvas.height - size) / 2;
+    ctx.drawImage(currentCropCanvas, sx, sy, size, size, 0, 0, 800, 800);
+    
+    // Save as WebP for optimization
+    const dataUrl = cropCanvas.toDataURL('image/webp', 0.85);
+    
+    // Save to storeData
+    if (!storeData.images) storeData.images = [];
+    storeData.images.push({
+        id: Date.now(),
+        name: `img_${Date.now()}.webp`,
+        data: dataUrl,
+        created: new Date().toISOString()
+    });
+    
+    saveStoreData();
+    renderUploadedImages();
+    closeCropModal();
+    showToast('Image uploaded and optimized!');
+}
+
+function renderUploadedImages() {
+    const container = document.getElementById('uploadedImages');
+    if (!container) return;
+    
+    if (!storeData.images || storeData.images.length === 0) {
+        container.innerHTML = '<p style="color: var(--text-light); text-align: center;">No images uploaded yet</p>';
+        return;
+    }
+    
+    container.innerHTML = storeData.images.map(img => `
+        <div class="uploaded-image">
+            <img src="${img.data}" alt="${img.name}">
+            <div class="uploaded-image-actions">
+                <button onclick="copyImageUrl('${img.data}')">Copy</button>
+                <button onclick="deleteImage(${img.id})">Delete</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function copyImageUrl(dataUrl) {
+    navigator.clipboard.writeText(dataUrl).then(() => {
+        showToast('Image URL copied!');
+    }).catch(() => {
+        showToast('Copied to clipboard');
+    });
+}
+
+function deleteImage(id) {
+    if (confirm('Delete this image?')) {
+        storeData.images = storeData.images.filter(img => img.id !== id);
+        saveStoreData();
+        renderUploadedImages();
+        showToast('Image deleted');
+    }
+}
+
+// Initialize image upload
+setTimeout(initImageUpload, 500);
