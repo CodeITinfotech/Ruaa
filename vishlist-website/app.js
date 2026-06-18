@@ -11,6 +11,9 @@ let storeData = {
         autoReplyMessage: 'Thank you for reaching out! We will get back to you soon.',
         paymentCOD: true,
         paymentUPI: false,
+        paymentUPIId: '',
+        paymentUPIName: '',
+        paymentUPIQrCode: '',
         paymentCard: false,
         paymentBank: false
     },
@@ -985,8 +988,25 @@ function loadAdminData() {
     // Payment Settings
     document.getElementById('paymentCOD').checked = storeData.settings.paymentCOD !== false;
     document.getElementById('paymentUPI').checked = storeData.settings.paymentUPI || false;
+    document.getElementById('paymentUPIId').value = storeData.settings.paymentUPIId || '';
+    document.getElementById('paymentUPIName').value = storeData.settings.paymentUPIName || '';
+    document.getElementById('paymentUPIQrCode').value = storeData.settings.paymentUPIQrCode || '';
     document.getElementById('paymentCard').checked = storeData.settings.paymentCard || false;
     document.getElementById('paymentBank').checked = storeData.settings.paymentBank || false;
+    
+    // Toggle UPI settings visibility
+    toggleUpiSettings();
+    
+    // Add UPI toggle listener
+    document.getElementById('paymentUPI')?.addEventListener('change', toggleUpiSettings);
+}
+
+function toggleUpiSettings() {
+    const upiCheckbox = document.getElementById('paymentUPI');
+    const upiSettings = document.getElementById('upiSettings');
+    if (upiCheckbox && upiSettings) {
+        upiSettings.style.display = upiCheckbox.checked ? 'block' : 'none';
+    }
 }
 
 function renderHeroSlidersAdmin() {
@@ -1542,6 +1562,9 @@ function saveSettings() {
     // Payment Settings
     storeData.settings.paymentCOD = document.getElementById('paymentCOD').checked;
     storeData.settings.paymentUPI = document.getElementById('paymentUPI').checked;
+    storeData.settings.paymentUPIId = document.getElementById('paymentUPIId').value;
+    storeData.settings.paymentUPIName = document.getElementById('paymentUPIName').value;
+    storeData.settings.paymentUPIQrCode = document.getElementById('paymentUPIQrCode').value;
     storeData.settings.paymentCard = document.getElementById('paymentCard').checked;
     storeData.settings.paymentBank = document.getElementById('paymentBank').checked;
     
