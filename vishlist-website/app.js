@@ -105,6 +105,13 @@ let storeData = {
         { id: 3, name: 'Co-ord Sets', image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600' },
         { id: 4, name: 'Silk Suits', image: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600' }
     ],
+    sizeCategories: [
+        { id: 1, name: 'Clothing Sizes', sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'] },
+        { id: 2, name: 'Footwear', sizes: ['6', '7', '8', '9', '10', '11'] },
+        { id: 3, name: 'Rings', sizes: ['5', '6', '7', '8', '9', '10'] },
+        { id: 4, name: 'Bangles', sizes: ['2.2', '2.4', '2.6', '2.8', '2.10'] },
+        { id: 5, name: 'Waist', sizes: ['26', '28', '30', '32', '34', '36', '38', '40'] }
+    ],
     pages: {
         about: {
             title: 'About Us',
@@ -755,6 +762,9 @@ function initAdmin() {
         });
     });
     
+    // Initialize Size Categories
+    renderSizeCategories();
+    
     // Admin Header Buttons
     document.getElementById('viewSiteBtn')?.addEventListener('click', (e) => {
         e.preventDefault();
@@ -931,6 +941,9 @@ function openProductModal(product = null) {
     editingProductId = product?.id || null;
     document.getElementById('productModalTitle').textContent = product ? 'Edit Product' : 'Add Product';
     
+    // Populate size categories
+    populateSizeCategorySelect();
+    
     document.getElementById('productId').value = product?.id || '';
     document.getElementById('productName').value = product?.name || '';
     document.getElementById('productPrice').value = product?.price || '';
@@ -938,7 +951,18 @@ function openProductModal(product = null) {
     document.getElementById('productCategory').value = product?.category || 'new-arrivals';
     document.getElementById('productImage').value = product?.image || '';
     document.getElementById('productDescription').value = product?.description || '';
-    document.getElementById('productSizes').value = product?.sizes?.join(', ') || 'S, M, L, XL';
+    
+    // Handle size category
+    if (product?.sizeCategoryId) {
+        document.getElementById('productSizeCategory').value = product.sizeCategoryId;
+        document.getElementById('productSizes').value = '';
+        toggleSizeInput();
+    } else {
+        document.getElementById('productSizeCategory').value = '';
+        document.getElementById('productSizes').value = product?.sizes?.join(', ') || '';
+        toggleSizeInput();
+    }
+    
     document.getElementById('productStatus').value = product?.status || 'in-stock';
     
     document.getElementById('productModal').classList.add('active');
@@ -961,7 +985,8 @@ function saveProduct() {
     const category = document.getElementById('productCategory').value;
     const image = document.getElementById('productImage').value;
     const description = document.getElementById('productDescription').value;
-    const sizes = document.getElementById('productSizes').value.split(',').map(s => s.trim()).filter(s => s);
+    const sizeCategoryId = document.getElementById('productSizeCategory').value ? parseInt(document.getElementById('productSizeCategory').value) : null;
+    const sizes = sizeCategoryId ? [] : document.getElementById('productSizes').value.split(',').map(s => s.trim()).filter(s => s);
     const status = document.getElementById('productStatus').value;
     
     if (!name || !price || !image) {
@@ -974,13 +999,13 @@ function saveProduct() {
         if (index !== -1) {
             storeData.products[index] = {
                 ...storeData.products[index],
-                name, price, originalPrice, category, image, description, sizes, status
+                name, price, originalPrice, category, image, description, sizeCategoryId, sizes, status
             };
         }
     } else {
         const newProduct = {
             id: Date.now(),
-            name, price, originalPrice, category, image, images: [], description, sizes, status
+            name, price, originalPrice, category, image, images: [], description, sizeCategoryId, sizes, status
         };
         storeData.products.push(newProduct);
     }
@@ -1069,6 +1094,153 @@ function deleteCategory(id) {
         renderCategoriesAdmin();
         showToast('Category deleted!');
     }
+}
+
+// ===== SIZE CATEGORIES =====
+let editingSizeCategoryId = null;
+
+function renderSizeCategories() {
+    const container = document.getElementById('sizeCategoriesAdminGrid');
+    if (!container) return;
+    
+    if (!storeData.sizeCategories || storeData.sizeCategories.length === 0) {
+        container.innerHTML = '<p style="color: var(--text-light); text-align: center; padding: 40px;">No size categories yet. Click + to add one.</p>';
+        return;
+    }
+    
+    container.innerHTML = storeData.sizeCategories.map(sc => `
+        <div class="category-card">
+            <h3>${sc.name}</h3>
+            ${sc.description ? `<p style="color: var(--text-light); font-size: 13px; margin-bottom: 8px;">${sc.description}</p>` : ''}
+            <div class="sizes-preview">
+                ${sc.sizes.map(s => `<span class="size-chip">${s}</span>`).join('')}
+            </div>
+            <div class="category-actions">
+                <button class="btn btn-sm" onclick="editSizeCategory(${sc.id})">Edit</button>
+                <button class="btn btn-delete btn-sm" onclick="deleteSizeCategory(${sc.id})">Delete</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function openSizeCategoryModal(id = null) {
+    editingSizeCategoryId = id;
+    const modal = document.getElementById('sizeCategoryModal');
+    const title = document.getElementById('sizeCategoryModalTitle');
+    
+    if (id) {
+        const sc = storeData.sizeCategories.find(s => s.id === id);
+        title.textContent = 'Edit Size Category';
+        document.getElementById('sizeCategoryName').value = sc.name;
+        document.getElementById('sizeCategorySizes').value = sc.sizes.join(', ');
+        document.getElementById('sizeCategoryDesc').value = sc.description || '';
+    } else {
+        title.textContent = 'Add Size Category';
+        document.getElementById('sizeCategoryName').value = '';
+        document.getElementById('sizeCategorySizes').value = '';
+        document.getElementById('sizeCategoryDesc').value = '';
+    }
+    
+    modal.classList.add('active');
+}
+
+function closeSizeCategoryModal() {
+    document.getElementById('sizeCategoryModal').classList.remove('active');
+    editingSizeCategoryId = null;
+}
+
+function saveSizeCategory(e) {
+    e.preventDefault();
+    
+    const name = document.getElementById('sizeCategoryName').value.trim();
+    const sizesStr = document.getElementById('sizeCategorySizes').value.trim();
+    const description = document.getElementById('sizeCategoryDesc').value.trim();
+    
+    if (!name || !sizesStr) {
+        showToast('Please fill required fields');
+        return;
+    }
+    
+    const sizes = sizesStr.split(/[,]+/).map(s => s.trim()).filter(s => s);
+    
+    if (sizes.length === 0) {
+        showToast('Please enter at least one size');
+        return;
+    }
+    
+    if (editingSizeCategoryId) {
+        const index = storeData.sizeCategories.findIndex(s => s.id === editingSizeCategoryId);
+        storeData.sizeCategories[index] = { 
+            ...storeData.sizeCategories[index], 
+            name, 
+            sizes, 
+            description 
+        };
+    } else {
+        storeData.sizeCategories.push({ 
+            id: Date.now(), 
+            name, 
+            sizes, 
+            description 
+        });
+    }
+    
+    saveStoreData();
+    renderSizeCategories();
+    populateSizeCategorySelect();
+    closeSizeCategoryModal();
+    showToast('Size category saved!');
+}
+
+function editSizeCategory(id) {
+    openSizeCategoryModal(id);
+}
+
+function deleteSizeCategory(id) {
+    if (confirm('Delete this size category?')) {
+        storeData.sizeCategories = storeData.sizeCategories.filter(s => s.id !== id);
+        saveStoreData();
+        renderSizeCategories();
+        populateSizeCategorySelect();
+        showToast('Size category deleted');
+    }
+}
+
+function populateSizeCategorySelect() {
+    const select = document.getElementById('productSizeCategory');
+    if (!select) return;
+    
+    select.innerHTML = '<option value="">-- Select Size Category --</option>';
+    
+    if (storeData.sizeCategories) {
+        storeData.sizeCategories.forEach(sc => {
+            const option = document.createElement('option');
+            option.value = sc.id;
+            option.textContent = sc.name;
+            select.appendChild(option);
+        });
+    }
+}
+
+function toggleSizeInput() {
+    const select = document.getElementById('productSizeCategory');
+    const customGroup = document.getElementById('customSizesGroup');
+    
+    if (select.value) {
+        customGroup.style.opacity = '0.5';
+        customGroup.style.pointerEvents = 'none';
+    } else {
+        customGroup.style.opacity = '1';
+        customGroup.style.pointerEvents = 'auto';
+    }
+}
+
+function getProductSizes(product) {
+    if (product.sizeCategoryId) {
+        const sc = storeData.sizeCategories?.find(s => s.id === product.sizeCategoryId);
+        if (sc) return sc.sizes;
+    }
+    return product.sizes || [];
 }
 
 function savePagesSettings() {

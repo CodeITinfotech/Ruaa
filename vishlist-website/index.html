@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=6">
+    <link rel="stylesheet" href="styles.css?v=7">
 </head>
 <body>
     <!-- ========== CUSTOMER FACING SITE ========== -->
@@ -392,6 +392,7 @@
                 <li data-section="homepage"><a href="#"><span class="icon">🏠</span> Homepage</a></li>
                 <li data-section="products"><a href="#"><span class="icon">👗</span> Products</a></li>
                 <li data-section="categories"><a href="#"><span class="icon">📁</span> Categories</a></li>
+                <li data-section="size-categories"><a href="#"><span class="icon">📏</span> Size Categories</a></li>
                 <li data-section="pages"><a href="#"><span class="icon">📄</span> Pages</a></li>
                 <li data-section="settings"><a href="#"><span class="icon">⚙️</span> Settings</a></li>
             </ul>
@@ -469,6 +470,46 @@
                 </div>
                 <div class="categories-admin-grid" id="categoriesAdminGrid"></div>
             </section>
+
+            <!-- Size Categories -->
+            <section class="admin-section" id="section-size-categories">
+                <div class="admin-section-header">
+                    <h1>Size Categories</h1>
+                    <button class="btn-add-simple" onclick="openSizeCategoryModal()" title="Add Size Category">+</button>
+                </div>
+                <p style="color: var(--text-light); margin-bottom: 20px;">Create size groups (e.g., Clothing Sizes, Footwear, Rings) and link them to products.</p>
+                <div class="size-categories-admin-grid" id="sizeCategoriesAdminGrid"></div>
+            </section>
+
+            <!-- Size Category Modal -->
+            <div class="modal" id="sizeCategoryModal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 id="sizeCategoryModalTitle">Add Size Category</h2>
+                        <button class="modal-close" onclick="closeSizeCategoryModal()">&times;</button>
+                    </div>
+                    <form onsubmit="saveSizeCategory(event)">
+                        <input type="hidden" id="editingSizeCategoryId">
+                        <div class="form-group">
+                            <label>Size Category Name *</label>
+                            <input type="text" id="sizeCategoryName" class="form-input" placeholder="e.g., Clothing Sizes, Footwear, Rings" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Sizes (comma separated) *</label>
+                            <input type="text" id="sizeCategorySizes" class="form-input" placeholder="e.g., XS, S, M, L, XL" required>
+                            <small style="color: var(--text-light);">Enter sizes separated by commas</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Description (optional)</label>
+                            <input type="text" id="sizeCategoryDesc" class="form-input" placeholder="e.g., Standard clothing sizes">
+                        </div>
+                        <div class="modal-actions">
+                            <button type="button" class="btn" onclick="closeSizeCategoryModal()">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
 
             <!-- Pages -->
             <section class="admin-section" id="section-pages">
@@ -671,7 +712,14 @@
                     <textarea id="productDescription" class="form-input" rows="4"></textarea>
                 </div>
                 <div class="form-group">
-                    <label>Sizes (comma separated)</label>
+                    <label>Size Category</label>
+                    <select id="productSizeCategory" class="form-input" onchange="toggleSizeInput()">
+                        <option value="">-- Select Size Category --</option>
+                    </select>
+                    <small style="color: var(--text-light);">Link to a size category OR enter custom sizes below</small>
+                </div>
+                <div class="form-group" id="customSizesGroup">
+                    <label>Custom Sizes (comma separated)</label>
                     <input type="text" id="productSizes" class="form-input" placeholder="S, M, L, XL">
                 </div>
                 <div class="form-group">
@@ -714,6 +762,6 @@
         <span class="toast-message" id="toastMessage"></span>
     </div>
 
-    <script src="app.js?v=6"></script>
+    <script src="app.js?v=7"></script>
 </body>
 </html>

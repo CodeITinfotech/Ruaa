@@ -778,3 +778,40 @@ textarea.form-input { resize: vertical; min-height: 120px; }
     transition: var(--transition);
 }
 .account-menu-item:hover { background: var(--border); }
+
+/* Size Categories Admin */
+.size-categories-admin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+.size-chip {
+    display: inline-block;
+    padding: 6px 12px;
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 13px;
+    margin: 2px;
+}
+.sizes-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin: 12px 0;
+}
+.category-card {
+    padding: 20px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.category-card h3 {
+    margin-bottom: 8px;
+    font-size: 18px;
+}
+.category-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+}
