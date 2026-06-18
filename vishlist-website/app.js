@@ -5,7 +5,10 @@ let storeData = {
     settings: {
         storeName: 'Ruaa',
         tagline: 'Fashion Meets You',
-        adminPassword: 'admin123'
+        adminPassword: 'admin123',
+        contactEmail: '',
+        autoReplySubject: 'Thank you for contacting Ruaa',
+        autoReplyMessage: 'Thank you for reaching out! We will get back to you soon.'
     },
     homepage: {
         announcement: 'Free shipping for all orders within India | We ship worldwide',
@@ -249,7 +252,22 @@ function initCart() {
     
     document.getElementById('contactForm')?.addEventListener('submit', (e) => {
         e.preventDefault();
-        showToast('Message sent successfully!');
+        const formData = new FormData(e.target);
+        const name = e.target.querySelector('input[type="text"]').value;
+        const email = e.target.querySelector('input[type="email"]').value;
+        const phone = e.target.querySelector('input[type="tel"]').value;
+        const message = e.target.querySelector('textarea').value;
+        
+        const subject = encodeURIComponent(`Contact from ${name} - ${storeData.settings.storeName}`);
+        const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\nPhone: ${phone}\n\nMessage:\n${message}`);
+        
+        if (storeData.settings.contactEmail) {
+            window.location.href = `mailto:${storeData.settings.contactEmail}?subject=${subject}&body=${body}`;
+            showToast('Opening email client...');
+        } else {
+            window.location.href = `mailto:?subject=${subject}&body=${body}`;
+            showToast('Opening email client...');
+        }
         e.target.reset();
     });
     
@@ -398,8 +416,17 @@ function loadCustomerContent() {
     const sliderContainer = document.getElementById('heroSlides');
     const sliderNav = document.getElementById('sliderNav');
     if (sliderContainer) {
+        const slideTitles = ['New Collection 2024', 'Summer Essentials'];
+        const slideSubtitles = ['Discover the latest trends in ethnic fashion', 'Elegant styles for every occasion'];
         sliderContainer.innerHTML = storeData.homepage.heroSliders.map((slide, i) => 
-            `<div class="slide ${i === 0 ? 'active' : ''}"><img src="${slide.image}" alt="Slide ${i+1}" class="slide-image"></div>`
+            `<div class="slide">
+                <img src="${slide.image}" alt="Slide ${i+1}" class="slide-image">
+                <div class="slide-content">
+                    <h2 class="slide-title">${slideTitles[i] || 'Welcome'}</h2>
+                    <p class="slide-subtitle">${slideSubtitles[i] || ''}</p>
+                    <a href="#" class="btn" data-page="products">Shop Now</a>
+                </div>
+            </div>`
         ).join('');
         sliderNav.innerHTML = storeData.homepage.heroSliders.map((_, i) => 
             `<button class="slider-dot ${i === 0 ? 'active' : ''}" data-slide="${i}"></button>`
@@ -489,25 +516,37 @@ function loadPages() {
 
 function initSlider() {
     const dots = document.querySelectorAll('.slider-dot');
-    const slides = document.querySelectorAll('.slide');
+    const sliderTrack = document.getElementById('heroSlides');
     let currentSlide = 0;
+    const totalSlides = dots.length;
+    let autoSlideInterval;
     
-    dots.forEach((dot, i) => {
-        dot.addEventListener('click', () => {
-            currentSlide = i;
-            updateSlider();
-        });
-    });
-    
-    function updateSlider() {
-        slides.forEach((s, i) => s.classList.toggle('active', i === currentSlide));
+    function goToSlide(index) {
+        currentSlide = index;
+        if (sliderTrack) {
+            sliderTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+        }
         dots.forEach((d, i) => d.classList.toggle('active', i === currentSlide));
     }
     
-    setInterval(() => {
-        currentSlide = (currentSlide + 1) % slides.length;
-        updateSlider();
-    }, 5000);
+    dots.forEach((dot, i) => {
+        dot.addEventListener('click', () => {
+            goToSlide(i);
+            resetAutoSlide();
+        });
+    });
+    
+    function nextSlide() {
+        goToSlide((currentSlide + 1) % totalSlides);
+    }
+    
+    function resetAutoSlide() {
+        clearInterval(autoSlideInterval);
+        autoSlideInterval = setInterval(nextSlide, 5000);
+    }
+    
+    // Initialize auto slide
+    autoSlideInterval = setInterval(nextSlide, 5000);
 }
 
 // ===== ADMIN FUNCTIONS =====
@@ -631,6 +670,9 @@ function loadAdminData() {
     // Settings
     document.getElementById('adminStoreName').value = storeData.settings.storeName;
     document.getElementById('adminTagline').value = storeData.settings.tagline;
+    document.getElementById('adminContactEmail').value = storeData.settings.contactEmail || '';
+    document.getElementById('adminAutoReplySubject').value = storeData.settings.autoReplySubject || 'Thank you for contacting Ruaa';
+    document.getElementById('adminAutoReplyMessage').value = storeData.settings.autoReplyMessage || 'Thank you for reaching out!';
 }
 
 function renderHeroSlidersAdmin() {
@@ -870,6 +912,9 @@ function savePagesSettings() {
 function saveSettings() {
     storeData.settings.storeName = document.getElementById('adminStoreName').value;
     storeData.settings.tagline = document.getElementById('adminTagline').value;
+    storeData.settings.contactEmail = document.getElementById('adminContactEmail').value;
+    storeData.settings.autoReplySubject = document.getElementById('adminAutoReplySubject').value;
+    storeData.settings.autoReplyMessage = document.getElementById('adminAutoReplyMessage').value;
     
     const newPassword = document.getElementById('adminNewPassword').value;
     if (newPassword) {

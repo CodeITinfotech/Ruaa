@@ -196,20 +196,55 @@ input, textarea, select { font-family: inherit; }
 
 /* Hero Slider */
 .hero-slider { position: relative; width: 100%; overflow: hidden; }
-.slider-container { position: relative; }
-.slide { display: none; }
-.slide.active { display: block; }
-.slide-image { width: 100%; height: 70vh; object-fit: cover; }
+.slider-track {
+    display: flex;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.slider-track .slide {
+    min-width: 100%;
+    position: relative;
+}
+.slide-image { width: 100%; height: 70vh; object-fit: cover; display: block; }
+.slide-content {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    text-align: center; color: #fff; z-index: 10;
+}
+.slide-title {
+    font-family: var(--font-display); font-size: 56px; font-weight: 600;
+    margin-bottom: 16px; text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+}
+.slide-subtitle {
+    font-size: 18px; margin-bottom: 32px; opacity: 0.9;
+}
+.slide .btn {
+    background: #fff; color: var(--primary);
+}
+.slide .btn:hover { background: var(--accent); color: #fff; }
 .slider-nav {
     position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
-    display: flex; gap: 12px;
+    display: flex; gap: 12px; z-index: 20;
 }
 .slider-dot {
-    width: 10px; height: 10px; border-radius: 50%;
+    width: 12px; height: 12px; border-radius: 50%;
     background: rgba(255,255,255,0.5); border: none; cursor: pointer;
-    transition: var(--transition);
+    transition: var(--transition); padding: 0;
 }
-.slider-dot.active { background: var(--accent); }
+.slider-dot.active { background: #fff; transform: scale(1.2); }
+.slider-arrows {
+    position: absolute; top: 50%; left: 0; right: 0;
+    transform: translateY(-50%);
+    display: flex; justify-content: space-between;
+    padding: 0 20px; z-index: 20; pointer-events: none;
+}
+.slider-arrow {
+    width: 50px; height: 50px; border-radius: 50%;
+    background: rgba(255,255,255,0.9); border: none;
+    font-size: 20px; cursor: pointer; pointer-events: auto;
+    display: flex; align-items: center; justify-content: center;
+    transition: var(--transition); opacity: 0;
+}
+.hero-slider:hover .slider-arrow { opacity: 1; }
+.slider-arrow:hover { background: #fff; transform: scale(1.1); }
 
 /* Sections */
 .section { padding: 80px 24px; max-width: 1280px; margin: 0 auto; }
