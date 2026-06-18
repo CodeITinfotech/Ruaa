@@ -16,13 +16,18 @@ let storeData = {
     },
     homepage: {
         announcement: 'Free shipping for all orders within India | We ship worldwide',
+        announcement2: 'Use code RUAA10 for 10% off your first order!',
         announcementEnabled: true,
+        announcement2Enabled: false,
         newArrivalsTitle: 'New Arrivals',
         bestSellersTitle: 'Best Sellers',
         categoriesTitle: 'Shop by Category',
         heroSliders: [
             { image: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1600', link: '' },
-            { image: 'https://images.unsplash.com/photo-1445205170230-053b83016050?w=1600', link: '' }
+            { image: 'https://images.unsplash.com/photo-1445205170230-053b83016050?w=1600', link: '' },
+            { image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1600', link: '' },
+            { image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1600', link: '' },
+            { image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=1600', link: '' }
         ]
     },
     products: [
@@ -33,8 +38,8 @@ let storeData = {
             originalPrice: 2999,
             category: 'new-arrivals',
             image: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=600',
-            images: [],
-            description: 'Beautiful Pakistani lawn suit with intricate embroidery. Perfect for summer occasions.',
+            images: ['https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=800', 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=800', 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800'],
+            description: 'Beautiful hand-embroidered lawn suit perfect for summer. Features delicate chikankari work.',
             sizes: ['S', 'M', 'L', 'XL'],
             status: 'in-stock'
         },
@@ -45,8 +50,8 @@ let storeData = {
             originalPrice: null,
             category: 'best-sellers',
             image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600',
-            images: [],
-            description: 'Elegant formal set for special occasions.',
+            images: ['https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800', 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800'],
+            description: 'Sophisticated formal wear for professional occasions.',
             sizes: ['M', 'L', 'XL'],
             status: 'in-stock'
         },
@@ -57,8 +62,8 @@ let storeData = {
             originalPrice: 3999,
             category: 'new-arrivals',
             image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600',
-            images: [],
-            description: 'Trendy co-ord set for the modern woman.',
+            images: ['https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800', 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=800'],
+            description: 'Trendy co-ord set for a chic look.',
             sizes: ['S', 'M', 'L'],
             status: 'on-sale'
         },
@@ -69,7 +74,7 @@ let storeData = {
             originalPrice: null,
             category: 'best-sellers',
             image: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600',
-            images: [],
+            images: ['https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=800', 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=800'],
             description: 'Premium silk suit with hand embroidery.',
             sizes: ['M', 'L'],
             status: 'sold-out'
@@ -81,8 +86,8 @@ let storeData = {
             originalPrice: null,
             category: 'new-arrivals',
             image: 'https://images.unsplash.com/photo-1612216039984-8952374d0c59?w=600',
-            images: [],
-            description: 'Comfortable farshi salwar for everyday wear.',
+            images: ['https://images.unsplash.com/photo-1612216039984-8952374d0c59?w=800', 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=800'],
+            description: 'Comfortable and stylish farshi salwar for everyday wear.',
             sizes: ['S', 'M', 'L', 'XL', 'XXL'],
             status: 'in-stock'
         },
@@ -93,7 +98,7 @@ let storeData = {
             originalPrice: 9999,
             category: 'best-sellers',
             image: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=600',
-            images: [],
+            images: ['https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=800', 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=800', 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800'],
             description: 'Exquisite bridal wear with heavy embellishments.',
             sizes: ['M', 'L', 'XL'],
             status: 'on-sale'
@@ -116,9 +121,10 @@ let storeData = {
         about: {
             title: 'About Us',
             image: 'https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=800',
-            content: 'Welcome to Ruaa, where style meets sophistication. We are a premium fashion brand dedicated to bringing you the finest Pakistani suits and ethnic wear.',
+            content: 'Welcome to Ruaa, where elegance meets tradition. We are a premium fashion brand dedicated to bringing you the finest Pakistani suits, lawn collections, and ethnic wear. Each piece is carefully curated to reflect timeless beauty and modern sophistication.',
+            founderName: 'Fatima Khan',
             founderImage: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400',
-            founderText: 'Founded by a passionate entrepreneur, Ruaa aims to make luxury fashion accessible to everyone.'
+            founderText: 'Founded by Fatima Khan, a visionary entrepreneur with a passion for fashion, Ruaa aims to make luxury ethnic wear accessible to everyone. With over a decade of experience in the fashion industry, our mission is to celebrate the rich heritage of Pakistani craftsmanship while embracing contemporary design.'
         },
         contact: {
             title: 'Contact Us',
@@ -590,8 +596,18 @@ function loadCustomerContent() {
     // Announcement
     const announcementBar = document.getElementById('announcementBar');
     if (announcementBar) {
-        announcementBar.style.display = storeData.homepage.announcementEnabled ? 'block' : 'none';
-        document.getElementById('announcementText').innerHTML = storeData.homepage.announcement.replace(/\|/g, '<span class="separator">|</span>');
+        const show1 = storeData.homepage.announcementEnabled && storeData.homepage.announcement;
+        const show2 = storeData.homepage.announcement2Enabled && storeData.homepage.announcement2;
+        announcementBar.style.display = (show1 || show2) ? 'block' : 'none';
+        
+        let html = '';
+        if (show1) {
+            html += `<div class="announcement-line${storeData.homepage.announcement.includes('|') ? ' scrolling' : ''}">${storeData.homepage.announcement.replace(/\|/g, '<span class="separator">|</span>')}</div>`;
+        }
+        if (show2) {
+            html += `<div class="announcement-line scrolling">${storeData.homepage.announcement2}</div>`;
+        }
+        document.getElementById('announcementText').innerHTML = html;
     }
     
     // Hero Sliders
@@ -687,9 +703,15 @@ function loadPages() {
     document.getElementById('aboutContent').innerHTML = `
         <h2 class="about-section-title">Our Story</h2>
         <p class="about-text">${about.content}</p>
+        <h2 class="about-section-title">Meet Our Founder</h2>
+        <div class="founder-content">
+            <img src="${about.founderImage}" alt="${about.founderName}" class="founder-image">
+            <div class="founder-text">
+                <h3 style="font-family: var(--font-display); font-size: 24px; margin-bottom: 12px;">${about.founderName}</h3>
+                ${about.founderText.split('. ').map(p => `<p class="about-text">${p}</p>`).join('')}
+            </div>
+        </div>
     `;
-    document.getElementById('founderImage').src = about.founderImage;
-    document.getElementById('founderText').innerHTML = about.founderText.split('. ').map(p => `<p class="about-text">${p}</p>`).join('');
     
     const contact = storeData.pages.contact;
     document.getElementById('contactPageTitle').textContent = contact.title;
@@ -825,8 +847,10 @@ function loadAdminData() {
     document.getElementById('statOrders').textContent = cart.length;
     
     // Homepage
-    document.getElementById('adminAnnouncement').value = storeData.homepage.announcement;
-    document.getElementById('adminAnnouncementEnabled').checked = storeData.homepage.announcementEnabled;
+    document.getElementById('adminAnnouncement').value = storeData.homepage.announcement || '';
+    document.getElementById('adminAnnouncementEnabled').checked = storeData.homepage.announcementEnabled !== false;
+    document.getElementById('adminAnnouncement2').value = storeData.homepage.announcement2 || '';
+    document.getElementById('adminAnnouncement2Enabled').checked = storeData.homepage.announcement2Enabled === true;
     document.getElementById('adminNewArrivalsTitle').value = storeData.homepage.newArrivalsTitle;
     document.getElementById('adminBestSellersTitle').value = storeData.homepage.bestSellersTitle;
     document.getElementById('adminCategoriesTitle').value = storeData.homepage.categoriesTitle;
@@ -845,6 +869,7 @@ function loadAdminData() {
     document.getElementById('adminAboutTitle').value = about.title;
     document.getElementById('adminAboutImage').value = about.image;
     document.getElementById('adminAboutContent').value = about.content;
+    document.getElementById('adminFounderName').value = about.founderName || '';
     document.getElementById('adminFounderImage').value = about.founderImage;
     document.getElementById('adminFounderText').value = about.founderText;
     
@@ -911,6 +936,8 @@ function deleteHeroSlide(index) {
 function saveHomepageSettings() {
     storeData.homepage.announcement = document.getElementById('adminAnnouncement').value;
     storeData.homepage.announcementEnabled = document.getElementById('adminAnnouncementEnabled').checked;
+    storeData.homepage.announcement2 = document.getElementById('adminAnnouncement2').value;
+    storeData.homepage.announcement2Enabled = document.getElementById('adminAnnouncement2Enabled').checked;
     storeData.homepage.newArrivalsTitle = document.getElementById('adminNewArrivalsTitle').value;
     storeData.homepage.bestSellersTitle = document.getElementById('adminBestSellersTitle').value;
     storeData.homepage.categoriesTitle = document.getElementById('adminCategoriesTitle').value;
@@ -1248,6 +1275,7 @@ function savePagesSettings() {
         title: document.getElementById('adminAboutTitle').value,
         image: document.getElementById('adminAboutImage').value,
         content: document.getElementById('adminAboutContent').value,
+        founderName: document.getElementById('adminFounderName').value,
         founderImage: document.getElementById('adminFounderImage').value,
         founderText: document.getElementById('adminFounderText').value
     };

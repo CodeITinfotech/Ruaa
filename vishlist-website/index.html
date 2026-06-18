@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=7">
+    <link rel="stylesheet" href="styles.css?v=8">
 </head>
 <body>
     <!-- ========== CUSTOMER FACING SITE ========== -->
@@ -132,17 +132,7 @@
                         <img src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=800" alt="About" class="about-hero-image" id="aboutImage">
                     </div>
                     <div class="about-content" id="aboutContent">
-                        <h2 class="about-section-title">Our Story</h2>
-                        <p class="about-text">Welcome to Ruaa, where style meets sophistication.</p>
-                    </div>
-                    <div class="founder-section" id="founderSection">
-                        <h2 class="about-section-title">The Founder</h2>
-                        <div class="founder-content">
-                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400" alt="Founder" class="founder-image" id="founderImage">
-                            <div class="founder-text" id="founderText">
-                                <p>Meet the visionary behind Ruaa.</p>
-                            </div>
-                        </div>
+                        <!-- Dynamic content loaded via JS -->
                     </div>
                 </div>
             </div>
@@ -415,13 +405,21 @@
                 <div class="admin-card">
                     <h2>Announcement Bar</h2>
                     <div class="form-group">
-                        <label>Announcement Text</label>
-                        <input type="text" id="adminAnnouncement" class="form-input">
+                        <label>Announcement Line 1</label>
+                        <input type="text" id="adminAnnouncement" class="form-input" placeholder="Use | for separator">
+                        <label class="toggle" style="margin-top:8px;">
+                            <input type="checkbox" id="adminAnnouncementEnabled" checked>
+                            <span>Enable Line 1</span>
+                        </label>
                     </div>
-                    <label class="toggle">
-                        <input type="checkbox" id="adminAnnouncementEnabled" checked>
-                        <span>Show Announcement Bar</span>
-                    </label>
+                    <div class="form-group">
+                        <label>Announcement Line 2</label>
+                        <input type="text" id="adminAnnouncement2" class="form-input" placeholder="Second announcement line">
+                        <label class="toggle" style="margin-top:8px;">
+                            <input type="checkbox" id="adminAnnouncement2Enabled">
+                            <span>Enable Line 2</span>
+                        </label>
+                    </div>
                 </div>
                 <div class="admin-card">
                     <h2>Hero Sliders</h2>
@@ -527,6 +525,10 @@
                     <div class="form-group">
                         <label>About Content (HTML allowed)</label>
                         <textarea id="adminAboutContent" class="form-input" rows="6"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Founder Name</label>
+                        <input type="text" id="adminFounderName" class="form-input">
                     </div>
                     <div class="form-group">
                         <label>Founder Image URL</label>
@@ -762,6 +764,6 @@
         <span class="toast-message" id="toastMessage"></span>
     </div>
 
-    <script src="app.js?v=7"></script>
+    <script src="app.js?v=8"></script>
 </body>
 </html>
