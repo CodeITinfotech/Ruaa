@@ -8,7 +8,11 @@ let storeData = {
         adminPassword: 'admin123',
         contactEmail: '',
         autoReplySubject: 'Thank you for contacting Ruaa',
-        autoReplyMessage: 'Thank you for reaching out! We will get back to you soon.'
+        autoReplyMessage: 'Thank you for reaching out! We will get back to you soon.',
+        paymentCOD: true,
+        paymentUPI: false,
+        paymentCard: false,
+        paymentBank: false
     },
     homepage: {
         announcement: 'Free shipping for all orders within India | We ship worldwide',
@@ -314,6 +318,10 @@ function renderCart() {
                 <a href="#" class="btn btn-primary" data-page="products">Shop Now</a>
             </div>
         `;
+        container.querySelector('[data-page]')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            navigateTo('products');
+        });
         return;
     }
     
@@ -344,16 +352,183 @@ function renderCart() {
         ${items}
         <div class="cart-summary">
             <p><strong>Total:</strong> ₹${total.toLocaleString()}</p>
-            <button class="btn btn-primary">Checkout</button>
+            <button class="btn btn-primary" onclick="openCheckout()">Proceed to Checkout</button>
         </div>
     `;
     
-    container.querySelectorAll('[data-page]').forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            navigateTo(link.dataset.page);
-        });
+    container.querySelector('[data-page]')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        navigateTo('products');
     });
+}
+
+function openCheckout() {
+    if (cart.length === 0) return;
+    
+    let total = cart.reduce((sum, item) => {
+        const product = storeData.products.find(p => p.id === item.id);
+        return sum + (product ? product.price * item.quantity : 0);
+    }, 0);
+    
+    let paymentOptions = [];
+    if (storeData.settings.paymentCOD) {
+        paymentOptions.push(`<label class="payment-option"><input type="radio" name="payment" value="COD" checked> <span>💵 Cash on Delivery (COD)</span></label>`);
+    }
+    if (storeData.settings.paymentUPI) {
+        paymentOptions.push(`<label class="payment-option"><input type="radio" name="payment" value="UPI"> <span>📱 UPI Payment</span></label>`);
+    }
+    if (storeData.settings.paymentCard) {
+        paymentOptions.push(`<label class="payment-option"><input type="radio" name="payment" value="Card"> <span>💳 Credit/Debit Card</span></label>`);
+    }
+    if (storeData.settings.paymentBank) {
+        paymentOptions.push(`<label class="payment-option"><input type="radio" name="payment" value="Bank"> <span>🏦 Bank Transfer</span></label>`);
+    }
+    
+    const checkoutModal = document.createElement('div');
+    checkoutModal.className = 'modal active';
+    checkoutModal.id = 'checkoutModal';
+    checkoutModal.innerHTML = `
+        <div class="modal-content checkout-modal">
+            <div class="modal-header">
+                <h2>Checkout</h2>
+                <button class="modal-close" onclick="closeCheckout()">&times;</button>
+            </div>
+            <form id="checkoutForm">
+                <div class="checkout-section">
+                    <h3>Contact Information</h3>
+                    <div class="form-group">
+                        <label>Full Name *</label>
+                        <input type="text" id="checkoutName" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" id="checkoutEmail" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone *</label>
+                        <input type="tel" id="checkoutPhone" class="form-input" required>
+                    </div>
+                </div>
+                <div class="checkout-section">
+                    <h3>Shipping Address</h3>
+                    <div class="form-group">
+                        <label>Address *</label>
+                        <textarea id="checkoutAddress" class="form-input" rows="3" required></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>City *</label>
+                            <input type="text" id="checkoutCity" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Pincode *</label>
+                            <input type="text" id="checkoutPincode" class="form-input" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="checkout-section">
+                    <h3>Payment Method</h3>
+                    <div class="payment-options">
+                        ${paymentOptions.join('')}
+                    </div>
+                </div>
+                <div class="checkout-section">
+                    <h3>Order Summary</h3>
+                    <div class="checkout-items">
+                        ${cart.map(item => {
+                            const product = storeData.products.find(p => p.id === item.id);
+                            if (!product) return '';
+                            return `
+                                <div class="checkout-item">
+                                    <span>${product.name} (${item.size}) x ${item.quantity}</span>
+                                    <span>₹${(product.price * item.quantity).toLocaleString()}</span>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                    <div class="checkout-total">
+                        <strong>Total: ₹${total.toLocaleString()}</strong>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%;margin-top:16px;">Place Order</button>
+            </form>
+        </div>
+    `;
+    
+    document.body.appendChild(checkoutModal);
+    
+    document.getElementById('checkoutForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        placeOrder();
+    });
+}
+
+function closeCheckout() {
+    const modal = document.getElementById('checkoutModal');
+    if (modal) modal.remove();
+}
+
+function placeOrder() {
+    const name = document.getElementById('checkoutName').value;
+    const email = document.getElementById('checkoutEmail').value;
+    const phone = document.getElementById('checkoutPhone').value;
+    const address = document.getElementById('checkoutAddress').value;
+    const city = document.getElementById('checkoutCity').value;
+    const pincode = document.getElementById('checkoutPincode').value;
+    const payment = document.querySelector('input[name="payment"]:checked')?.value || 'COD';
+    
+    let orderItems = cart.map(item => {
+        const product = storeData.products.find(p => p.id === item.id);
+        return `${product?.name || 'Unknown'} (${item.size}) x ${item.quantity}`;
+    }).join(', ');
+    
+    let total = cart.reduce((sum, item) => {
+        const product = storeData.products.find(p => p.id === item.id);
+        return sum + (product ? product.price * item.quantity : 0);
+    }, 0);
+    
+    const subject = encodeURIComponent(`New Order from ${name} - ${storeData.settings.storeName}`);
+    const body = encodeURIComponent(
+`NEW ORDER DETAILS
+==================
+
+Customer Info:
+Name: ${name}
+Email: ${email}
+Phone: ${phone}
+
+Shipping Address:
+${address}
+${city} - ${pincode}
+
+Payment Method: ${payment}
+
+Order Items:
+${cart.map(item => {
+    const product = storeData.products.find(p => p.id === item.id);
+    return `- ${product?.name || 'Unknown'} (Size: ${item.size}) x ${item.quantity} = ₹${(product?.price || 0) * item.quantity}`;
+}).join('\n')}
+
+TOTAL: ₹${total.toLocaleString()}
+==================`
+    );
+    
+    if (storeData.settings.contactEmail) {
+        window.location.href = `mailto:${storeData.settings.contactEmail}?subject=${subject}&body=${body}`;
+    } else {
+        window.location.href = `mailto:?subject=${subject}&body=${body}`;
+    }
+    
+    cart = [];
+    localStorage.setItem('ruaa-cart', JSON.stringify(cart));
+    updateCartCount();
+    closeCheckout();
+    
+    showToast('Order placed! Check your email app to send the order.');
+    
+    setTimeout(() => {
+        navigateTo('home');
+    }, 1000);
 }
 
 function showProduct(productId) {
@@ -673,6 +848,12 @@ function loadAdminData() {
     document.getElementById('adminContactEmail').value = storeData.settings.contactEmail || '';
     document.getElementById('adminAutoReplySubject').value = storeData.settings.autoReplySubject || 'Thank you for contacting Ruaa';
     document.getElementById('adminAutoReplyMessage').value = storeData.settings.autoReplyMessage || 'Thank you for reaching out!';
+    
+    // Payment Settings
+    document.getElementById('paymentCOD').checked = storeData.settings.paymentCOD !== false;
+    document.getElementById('paymentUPI').checked = storeData.settings.paymentUPI || false;
+    document.getElementById('paymentCard').checked = storeData.settings.paymentCard || false;
+    document.getElementById('paymentBank').checked = storeData.settings.paymentBank || false;
 }
 
 function renderHeroSlidersAdmin() {
@@ -915,6 +1096,12 @@ function saveSettings() {
     storeData.settings.contactEmail = document.getElementById('adminContactEmail').value;
     storeData.settings.autoReplySubject = document.getElementById('adminAutoReplySubject').value;
     storeData.settings.autoReplyMessage = document.getElementById('adminAutoReplyMessage').value;
+    
+    // Payment Settings
+    storeData.settings.paymentCOD = document.getElementById('paymentCOD').checked;
+    storeData.settings.paymentUPI = document.getElementById('paymentUPI').checked;
+    storeData.settings.paymentCard = document.getElementById('paymentCard').checked;
+    storeData.settings.paymentBank = document.getElementById('paymentBank').checked;
     
     const newPassword = document.getElementById('adminNewPassword').value;
     if (newPassword) {
