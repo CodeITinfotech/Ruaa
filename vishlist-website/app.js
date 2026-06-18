@@ -1308,3 +1308,308 @@ function deleteImage(id) {
 
 // Initialize image upload
 setTimeout(initImageUpload, 500);
+
+// ===== CUSTOMER AUTHENTICATION =====
+let currentCustomer = null;
+let pendingRegistration = null;
+let currentOTP = null;
+
+// Customer storage
+function getCustomers() {
+    const data = localStorage.getItem('ruaa-customers');
+    return data ? JSON.parse(data) : [];
+}
+
+function saveCustomers(customers) {
+    localStorage.setItem('ruaa-customers', JSON.stringify(customers));
+}
+
+function getCurrentCustomer() {
+    const data = sessionStorage.getItem('ruaa-customer');
+    return data ? JSON.parse(data) : null;
+}
+
+function setCurrentCustomer(customer) {
+    if (customer) {
+        sessionStorage.setItem('ruaa-customer', JSON.stringify(customer));
+    } else {
+        sessionStorage.removeItem('ruaa-customer');
+    }
+    currentCustomer = customer;
+    updateAccountIcon();
+}
+
+// Update account icon based on login status
+function updateAccountIcon() {
+    const icon = document.getElementById('accountIcon');
+    if (icon) {
+        if (currentCustomer) {
+            icon.innerHTML = `<span style="color: var(--accent); font-weight: 600;">${currentCustomer.name.charAt(0).toUpperCase()}</span>`;
+        } else {
+            icon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>`;
+        }
+    }
+}
+
+// Switch between login/register tabs
+function switchAuthTab(tab) {
+    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.auth-content').forEach(c => c.classList.remove('active'));
+    
+    document.querySelector(`.auth-tab[data-tab="${tab}"]`).classList.add('active');
+    document.getElementById(`${tab}Content`).classList.add('active');
+}
+
+// Show account content
+function showAccountContent() {
+    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.auth-content').forEach(c => c.classList.remove('active'));
+    document.getElementById('accountContent').classList.add('active');
+    
+    const customer = getCurrentCustomer();
+    if (customer) {
+        document.getElementById('accountName').textContent = customer.name;
+        document.getElementById('accountEmail').textContent = customer.email;
+    }
+}
+
+// Generate OTP
+function generateOTP() {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+// Send OTP (mock - in production, use email service)
+function sendOTP(email, otp, type) {
+    // In production, integrate with email service like SendGrid, Mailgun, etc.
+    // For demo, we'll use mailto as fallback
+    const subject = encodeURIComponent(`Your ${storeData.settings.storeName} Verification Code`);
+    const body = encodeURIComponent(`Your verification code is: ${otp}\n\nThis code expires in 10 minutes.\n\nIf you didn't request this, please ignore this email.`);
+    
+    // Store OTP temporarily
+    sessionStorage.setItem('ruaa-otp', JSON.stringify({
+        code: otp,
+        email: email,
+        type: type,
+        expires: Date.now() + 600000 // 10 minutes
+    }));
+    
+    // For demo: show OTP in console and toast
+    console.log(`OTP for ${email}: ${otp}`);
+    showToast(`Demo: OTP sent to ${email} - Code: ${otp}`);
+    
+    // Open email client as fallback
+    window.open(`mailto:${email}?subject=${subject}&body=${body}`, '_blank');
+}
+
+// Resend OTP
+function resendOTP() {
+    const stored = JSON.parse(sessionStorage.getItem('ruaa-otp') || '{}');
+    if (stored.email) {
+        const newOTP = generateOTP();
+        sendOTP(stored.email, newOTP, stored.type);
+        showToast('New OTP sent!');
+    }
+}
+
+// Customer Login
+function customerLogin(email, password) {
+    const customers = getCustomers();
+    const customer = customers.find(c => c.email === email && c.password === password);
+    
+    if (customer) {
+        if (!customer.verified) {
+            // Send OTP for verification
+            const otp = generateOTP();
+            sendOTP(email, otp, 'login');
+            
+            pendingRegistration = { email, password, name: customer.name };
+            document.getElementById('otpEmail').textContent = email;
+            switchAuthTab('otp');
+            showToast('Verification required. Check your email.');
+            return;
+        }
+        
+        setCurrentCustomer(customer);
+        showAccountContent();
+        showToast('Welcome back!');
+        navigateTo('home');
+    } else {
+        throw new Error('Invalid email or password');
+    }
+}
+
+// Customer Registration
+function customerRegister(name, email, password) {
+    const customers = getCustomers();
+    
+    // Check if email exists
+    if (customers.find(c => c.email === email)) {
+        throw new Error('Email already registered');
+    }
+    
+    // Generate OTP
+    const otp = generateOTP();
+    sendOTP(email, otp, 'register');
+    
+    // Store pending registration
+    pendingRegistration = { name, email, password };
+    document.getElementById('otpEmail').textContent = email;
+    switchAuthTab('otp');
+    showToast('Verification code sent to your email.');
+}
+
+// Verify OTP
+function verifyOTP(otp) {
+    const stored = JSON.parse(sessionStorage.getItem('ruaa-otp') || '{}');
+    
+    if (!stored.code || Date.now() > stored.expires) {
+        throw new Error('OTP expired. Please request a new one.');
+    }
+    
+    if (otp !== stored.code) {
+        throw new Error('Invalid OTP. Please try again.');
+    }
+    
+    // OTP valid
+    sessionStorage.removeItem('ruaa-otp');
+    
+    if (stored.type === 'register' && pendingRegistration) {
+        // Create customer account
+        const customers = getCustomers();
+        const newCustomer = {
+            id: Date.now(),
+            name: pendingRegistration.name,
+            email: pendingRegistration.email,
+            password: pendingRegistration.password,
+            verified: true,
+            created: new Date().toISOString(),
+            addresses: [],
+            orders: []
+        };
+        
+        customers.push(newCustomer);
+        saveCustomers(customers);
+        
+        setCurrentCustomer(newCustomer);
+        showAccountContent();
+        showToast('Account created successfully!');
+        navigateTo('home');
+        
+        pendingRegistration = null;
+    } else if (stored.type === 'login' && pendingRegistration) {
+        // Mark as verified and login
+        const customers = getCustomers();
+        const idx = customers.findIndex(c => c.email === pendingRegistration.email);
+        if (idx !== -1) {
+            customers[idx].verified = true;
+            saveCustomers(customers);
+        }
+        
+        setCurrentCustomer(customers[idx]);
+        showAccountContent();
+        showToast('Email verified! Welcome!');
+        navigateTo('home');
+        
+        pendingRegistration = null;
+    }
+}
+
+// Logout
+function logout() {
+    setCurrentCustomer(null);
+    switchAuthTab('login');
+    document.getElementById('customerLoginForm').reset();
+    showToast('Logged out successfully');
+    navigateTo('home');
+}
+
+// Shopify Login (mock)
+function loginWithShopify() {
+    // In production, integrate with Shopify's OAuth
+    // For demo, create a mock Shopify customer
+    showToast('Shopify login would redirect to Shopify OAuth');
+    
+    // Demo: Auto-create Shopify customer
+    const mockShopifyCustomer = {
+        id: 'shopify_' + Date.now(),
+        name: 'Shopify User',
+        email: 'shopify.user@shop.com',
+        verified: true,
+        source: 'shopify',
+        created: new Date().toISOString()
+    };
+    
+    setCurrentCustomer(mockShopifyCustomer);
+    showAccountContent();
+    showToast('Logged in via Shopify (Demo)');
+    navigateTo('home');
+}
+
+// Initialize auth on page load
+document.addEventListener('DOMContentLoaded', () => {
+    // Check for existing session
+    currentCustomer = getCurrentCustomer();
+    updateAccountIcon();
+    updateLoginButton();
+    
+    // Auth tab switching
+    document.querySelectorAll('.auth-tab').forEach(tab => {
+        tab.addEventListener('click', () => switchAuthTab(tab.dataset.tab));
+    });
+    
+    // Customer login form
+    document.getElementById('customerLoginForm')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        try {
+            customerLogin(email, password);
+        } catch (err) {
+            showToast(err.message);
+        }
+    });
+    
+    // Registration form
+    document.getElementById('registerForm')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('registerName').value;
+        const email = document.getElementById('registerEmail').value;
+        const password = document.getElementById('registerPassword').value;
+        try {
+            customerRegister(name, email, password);
+        } catch (err) {
+            showToast(err.message);
+        }
+    });
+    
+    // OTP form
+    document.getElementById('otpForm')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const otp = document.getElementById('otpCode').value;
+        try {
+            verifyOTP(otp);
+        } catch (err) {
+            showToast(err.message);
+        }
+    });
+    
+    // Account modal/icon click
+    document.getElementById('loginBtn')?.addEventListener('click', (e) => {
+        if (currentCustomer) {
+            e.preventDefault();
+            showAccountContent();
+            navigateTo('login');
+        }
+    });
+});
+
+function updateLoginButton() {
+    const btn = document.getElementById('loginBtn');
+    if (btn) {
+        if (currentCustomer) {
+            btn.textContent = 'My Account';
+        } else {
+            btn.textContent = 'Login';
+        }
+    }
+}

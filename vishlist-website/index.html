@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=5">
+    <link rel="stylesheet" href="styles.css?v=6">
 </head>
 <body>
     <!-- ========== CUSTOMER FACING SITE ========== -->
@@ -50,7 +50,7 @@
                             <path d="m21 21-4.35-4.35"></path>
                         </svg>
                     </button>
-                    <a href="#" class="login-btn" data-page="login">Login</a>
+                    <a href="#" class="login-btn" id="loginBtn" data-page="login">Login</a>
                     <a href="#" class="cart-btn" id="cartBtn">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
@@ -233,19 +233,98 @@
             <div class="page" id="page-login">
                 <div class="page-container">
                     <div class="login-container">
-                        <h1 class="page-title">Login</h1>
-                        <form class="login-form" id="loginForm">
-                            <div class="form-group">
-                                <label>Email</label>
-                                <input type="email" class="form-input" required>
+                        <!-- Login Tabs -->
+                        <div class="auth-tabs">
+                            <button class="auth-tab active" data-tab="login">Login</button>
+                            <button class="auth-tab" data-tab="register">Create Account</button>
+                        </div>
+                        
+                        <!-- Login Form -->
+                        <div class="auth-content active" id="loginContent">
+                            <h2>Welcome Back</h2>
+                            <form id="customerLoginForm">
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" id="loginEmail" class="form-input" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Password</label>
+                                    <input type="password" id="loginPassword" class="form-input" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Login</button>
+                            </form>
+                            <div class="auth-divider"><span>or</span></div>
+                            <button class="btn btn-shopify" onclick="loginWithShopify()">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M15.337 3.415c-.101-.04-.202-.06-.303-.08-.05-.01-.101-.01-.152-.01-.192 0-.384.07-.536.181-.192.141-.293.353-.293.575 0 .212.091.394.253.525.07.07.162.12.253.181l.02.01.01.01c.162.08.334.151.516.191l.101.03c.121.03.253.05.384.05.07 0 .141-.01.212-.03.253-.06.485-.191.657-.383.172-.182.253-.404.253-.636 0-.141-.03-.283-.101-.414a.903.903 0 0 0-.263-.303l-.01-.01c-.141-.12-.313-.222-.516-.292-.202-.07-.424-.11-.657-.11h-.02a1.2 1.2 0 0 0-.283.04c-.03.01-.06.02-.09.03zm-6.697 5.12c-.202 0-.404-.03-.586-.09a1.32 1.32 0 0 1-.485-.272 1.15 1.15 0 0 1-.323-.434 1.4 1.4 0 0 1-.111-.565c0-.202.04-.394.11-.565.08-.172.182-.323.323-.434.13-.12.293-.211.475-.273.181-.06.384-.09.586-.09.202 0 .404.03.586.09.181.06.343.151.475.273.13.11.232.262.323.434.08.171.121.363.121.565a1.4 1.4 0 0 1-.121.565c-.08.172-.192.313-.323.434-.13.121-.293.212-.475.272-.182.06-.384.09-.586.09zm7.96.575c-.182 0-.364-.03-.536-.09a1.24 1.24 0 0 1-.424-.272 1.13 1.13 0 0 1-.283-.424 1.5 1.5 0 0 1-.101-.565c0-.202.03-.394.101-.565.07-.172.162-.313.283-.434.12-.12.263-.211.424-.273.172-.06.354-.09.536-.09.182 0 .364.03.536.09.172.06.323.151.444.273.12.11.212.262.283.434.07.171.1.363.1.565 0 .202-.03.394-.1.565-.07.172-.162.313-.283.434-.12.121-.272.212-.444.272-.172.06-.354.09-.536.09z"/></svg>
+                                Continue with Shopify
+                            </button>
+                            <p class="auth-footer">New customer? <a href="#" onclick="switchAuthTab('register')">Create account</a></p>
+                        </div>
+                        
+                        <!-- Register Form -->
+                        <div class="auth-content" id="registerContent">
+                            <h2>Create Account</h2>
+                            <form id="registerForm">
+                                <div class="form-group">
+                                    <label>Full Name</label>
+                                    <input type="text" id="registerName" class="form-input" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" id="registerEmail" class="form-input" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Password</label>
+                                    <input type="password" id="registerPassword" class="form-input" minlength="6" required>
+                                    <small style="color: var(--text-light);">Min 6 characters</small>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Create Account</button>
+                            </form>
+                            <div class="auth-divider"><span>or</span></div>
+                            <button class="btn btn-shopify" onclick="loginWithShopify()">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M15.337 3.415c-.101-.04-.202-.06-.303-.08-.05-.01-.101-.01-.152-.01-.192 0-.384.07-.536.181-.192.141-.293.353-.293.575 0 .212.091.394.253.525.07.07.162.12.253.181l.02.01.01.01c.162.08.334.151.516.191l.101.03c.121.03.253.05.384.05.07 0 .141-.01.212-.03.253-.06.485-.191.657-.383.172-.182.253-.404.253-.636 0-.141-.03-.283-.101-.414a.903.903 0 0 0-.263-.303l-.01-.01c-.141-.12-.313-.222-.516-.292-.202-.07-.424-.11-.657-.11h-.02a1.2 1.2 0 0 0-.283.04c-.03.01-.06.02-.09.03zm-6.697 5.12c-.202 0-.404-.03-.586-.09a1.32 1.32 0 0 1-.485-.272 1.15 1.15 0 0 1-.323-.434 1.4 1.4 0 0 1-.111-.565c0-.202.04-.394.11-.565.08-.172.182-.323.323-.434.13-.12.293-.211.475-.273.181-.06.384-.09.586-.09.202 0 .404.03.586.09.181.06.343.151.475.273.13.11.232.262.323.434.08.171.121.363.121.565 0 .202-.04.394-.121.565-.08.172-.192.313-.323.434-.13.121-.293.212-.475.272-.182.06-.384.09-.586.09zm7.96.575c-.182 0-.364-.03-.536-.09a1.24 1.24 0 0 1-.424-.272 1.13 1.13 0 0 1-.283-.424 1.5 1.5 0 0 1-.101-.565c0-.202.03-.394.101-.565.07-.172.162-.313.283-.434.12-.12.263-.211.424-.273.172-.06.354-.09.536-.09.182 0 .364.03.536.09.172.06.323.151.444.273.12.11.212.262.283.434.07.171.1.363.1.565 0 .202-.03.394-.1.565-.07.172-.162.313-.283.434-.12.121-.272.212-.444.272-.172.06-.354.09-.536.09z"/></svg>
+                                Continue with Shopify
+                            </button>
+                            <p class="auth-footer">Already have an account? <a href="#" onclick="switchAuthTab('login')">Login</a></p>
+                        </div>
+                        
+                        <!-- OTP Verification -->
+                        <div class="auth-content" id="otpContent">
+                            <h2>Verify Email</h2>
+                            <p style="color: var(--text-light); margin-bottom: 20px;">We've sent a verification code to <strong id="otpEmail"></strong></p>
+                            <form id="otpForm">
+                                <div class="form-group">
+                                    <label>Enter OTP</label>
+                                    <input type="text" id="otpCode" class="form-input otp-input" maxlength="6" placeholder="6-digit code" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Verify</button>
+                            </form>
+                            <p class="auth-footer">Didn't receive code? <a href="#" onclick="resendOTP()">Resend</a></p>
+                        </div>
+                        
+                        <!-- My Account (logged in) -->
+                        <div class="auth-content" id="accountContent">
+                            <h2>My Account</h2>
+                            <div class="account-info">
+                                <p><strong>Welcome,</strong> <span id="accountName"></span></p>
+                                <p><strong>Email:</strong> <span id="accountEmail"></span></p>
                             </div>
-                            <div class="form-group">
-                                <label>Password</label>
-                                <input type="password" class="form-input" required>
+                            <div class="account-menu">
+                                <a href="#" class="account-menu-item" data-page="orders">📦 My Orders</a>
+                                <a href="#" class="account-menu-item" data-page="addresses">📍 Addresses</a>
+                                <a href="#" class="account-menu-item">💳 Payment Methods</a>
                             </div>
-                            <button type="submit" class="btn btn-primary">Login</button>
-                        </form>
+                            <button class="btn" onclick="logout()">Logout</button>
+                        </div>
                     </div>
+                </div>
+            </div>
+            
+            <!-- Orders Page -->
+            <div class="page" id="page-orders">
+                <div class="page-container">
+                    <h1 class="page-title">My Orders</h1>
+                    <div id="ordersContent"></div>
                 </div>
             </div>
         </main>
@@ -635,6 +714,6 @@
         <span class="toast-message" id="toastMessage"></span>
     </div>
 
-    <script src="app.js?v=5"></script>
+    <script src="app.js?v=6"></script>
 </body>
 </html>
