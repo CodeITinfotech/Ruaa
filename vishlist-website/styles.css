@@ -418,6 +418,14 @@ textarea.form-input { resize: vertical; min-height: 120px; }
 .admin-card h2 { font-size: 18px; font-weight: 600; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
 .admin-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
 .admin-section-header h1 { margin-bottom: 0; }
+.btn-add-simple {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--accent); color: #fff;
+    border: none; font-size: 24px; font-weight: 400;
+    cursor: pointer; transition: var(--transition);
+    display: flex; align-items: center; justify-content: center;
+}
+.btn-add-simple:hover { background: var(--accent-dark); transform: scale(1.1); }
 
 /* Dashboard Stats */
 .dashboard-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 32px; }
