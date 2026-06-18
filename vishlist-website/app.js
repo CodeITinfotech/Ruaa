@@ -397,6 +397,25 @@ function openCheckout() {
         paymentOptions.push(`<label class="payment-option"><input type="radio" name="payment" value="Bank"> <span>🏦 Bank Transfer</span></label>`);
     }
     
+    // Wallet option
+    const customer = getCurrentCustomer();
+    const walletBalance = customer?.wallet || 0;
+    const walletDiscount = Math.min(walletBalance, total);
+    const walletSection = customer && walletBalance > 0 ? `
+        <div class="checkout-section">
+            <h3>Wallet</h3>
+            <div class="wallet-use-option">
+                <label class="payment-option">
+                    <input type="checkbox" id="useWallet" onchange="updateWalletDiscount()">
+                    <span>💰 Use Wallet Balance (₹${walletBalance} available)</span>
+                </label>
+                <div id="walletDiscountAmount" style="display:none; margin-top:8px; padding:12px; background:var(--bg-alt); border-radius:8px;">
+                    <strong>Wallet Discount: ₹<span id="walletDiscountValue">${walletDiscount}</span></strong>
+                </div>
+            </div>
+        </div>
+    ` : '';
+    
     const checkoutModal = document.createElement('div');
     checkoutModal.className = 'modal active';
     checkoutModal.id = 'checkoutModal';
@@ -445,6 +464,7 @@ function openCheckout() {
                         ${paymentOptions.join('')}
                     </div>
                 </div>
+                ${walletSection}
                 <div class="checkout-section">
                     <h3>Order Summary</h3>
                     <div class="checkout-items">
@@ -460,7 +480,7 @@ function openCheckout() {
                         }).join('')}
                     </div>
                     <div class="checkout-total">
-                        <strong>Total: ₹${total.toLocaleString()}</strong>
+                        <strong>Total: <span id="checkoutTotalAmount" data-total="${total}">₹${total.toLocaleString()}</span></strong>
                     </div>
                 </div>
                 <button type="submit" class="btn btn-primary" style="width:100%;margin-top:16px;">Place Order</button>
@@ -481,6 +501,33 @@ function closeCheckout() {
     if (modal) modal.remove();
 }
 
+function updateWalletDiscount() {
+    const useWallet = document.getElementById('useWallet')?.checked;
+    const discountDiv = document.getElementById('walletDiscountAmount');
+    const discountValue = document.getElementById('walletDiscountValue');
+    const totalEl = document.getElementById('checkoutTotalAmount');
+    
+    if (useWallet) {
+        discountDiv.style.display = 'block';
+        const customer = getCurrentCustomer();
+        const walletBalance = customer?.wallet || 0;
+        const currentTotal = parseInt(totalEl?.dataset.total || 0);
+        const discount = Math.min(walletBalance, currentTotal);
+        if (discountValue) discountValue.textContent = discount;
+        if (totalEl) {
+            totalEl.textContent = `₹${(currentTotal - discount).toLocaleString()}`;
+            totalEl.dataset.discount = discount;
+        }
+    } else {
+        discountDiv.style.display = 'none';
+        const currentTotal = parseInt(totalEl?.dataset.total || 0);
+        if (totalEl) {
+            totalEl.textContent = `₹${currentTotal.toLocaleString()}`;
+            totalEl.dataset.discount = 0;
+        }
+    }
+}
+
 function placeOrder() {
     const name = document.getElementById('checkoutName').value;
     const email = document.getElementById('checkoutEmail').value;
@@ -489,6 +536,8 @@ function placeOrder() {
     const city = document.getElementById('checkoutCity').value;
     const pincode = document.getElementById('checkoutPincode').value;
     const payment = document.querySelector('input[name="payment"]:checked')?.value || 'COD';
+    const useWallet = document.getElementById('useWallet')?.checked || false;
+    const walletDiscount = parseInt(document.getElementById('checkoutTotalAmount')?.dataset.discount || 0);
     
     let orderItems = cart.map(item => {
         const product = storeData.products.find(p => p.id === item.id);
@@ -499,6 +548,50 @@ function placeOrder() {
         const product = storeData.products.find(p => p.id === item.id);
         return sum + (product ? product.price * item.quantity : 0);
     }, 0);
+    
+    const finalTotal = total - walletDiscount;
+    
+    // Save order for logged-in customer
+    const customer = getCurrentCustomer();
+    if (customer) {
+        const customers = getCustomers();
+        const customerIdx = customers.findIndex(c => c.id === customer.id);
+        if (customerIdx !== -1) {
+            // Create order
+            const order = {
+                id: Date.now(),
+                items: cart.map(item => {
+                    const product = storeData.products.find(p => p.id === item.id);
+                    return { name: product?.name, size: item.size, quantity: item.quantity, price: product?.price };
+                }),
+                total: finalTotal,
+                originalTotal: total,
+                walletUsed: walletDiscount,
+                payment: payment,
+                status: 'pending',
+                date: new Date().toISOString(),
+                shipping: { name, email, phone, address, city, pincode }
+            };
+            
+            customers[customerIdx].orders = customers[customerIdx].orders || [];
+            customers[customerIdx].orders.unshift(order);
+            
+            // Deduct wallet if used
+            if (useWallet && walletDiscount > 0) {
+                customers[customerIdx].wallet -= walletDiscount;
+                customers[customerIdx].walletHistory = customers[customerIdx].walletHistory || [];
+                customers[customerIdx].walletHistory.unshift({
+                    type: 'debit',
+                    amount: walletDiscount,
+                    date: new Date().toISOString(),
+                    note: `Used for Order #${order.id}`
+                });
+            }
+            
+            saveCustomers(customers);
+            setCurrentCustomer(customers[customerIdx]);
+        }
+    }
     
     const subject = encodeURIComponent(`New Order from ${name} - ${storeData.settings.storeName}`);
     const body = encodeURIComponent(
@@ -515,14 +608,16 @@ ${address}
 ${city} - ${pincode}
 
 Payment Method: ${payment}
-
+${walletDiscount > 0 ? `Wallet Used: ₹${walletDiscount}\n` : ''}
 Order Items:
 ${cart.map(item => {
     const product = storeData.products.find(p => p.id === item.id);
     return `- ${product?.name || 'Unknown'} (Size: ${item.size}) x ${item.quantity} = ₹${(product?.price || 0) * item.quantity}`;
 }).join('\n')}
 
-TOTAL: ₹${total.toLocaleString()}
+SUBTOTAL: ₹${total.toLocaleString()}
+${walletDiscount > 0 ? `WALLET DISCOUNT: -₹${walletDiscount}\n` : ''}
+TOTAL: ₹${finalTotal.toLocaleString()}
 ==================`
     );
     
@@ -786,6 +881,9 @@ function initAdmin() {
     
     // Initialize Size Categories
     renderSizeCategories();
+    
+    // Initialize Customers
+    renderCustomersAdmin();
     
     // Admin Header Buttons
     document.getElementById('viewSiteBtn')?.addEventListener('click', (e) => {
@@ -1121,6 +1219,150 @@ function deleteCategory(id) {
         renderCategoriesAdmin();
         showToast('Category deleted!');
     }
+}
+
+// ===== CUSTOMERS & WALLET MANAGEMENT =====
+function renderCustomersAdmin() {
+    const container = document.getElementById('customersList');
+    const customers = getCustomers();
+    
+    if (customers.length === 0) {
+        container.innerHTML = '<p style="color:var(--text-light);">No customers registered yet.</p>';
+        return;
+    }
+    
+    container.innerHTML = `
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Orders</th>
+                    <th>Wallet Balance</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${customers.map(c => `
+                    <tr>
+                        <td>${c.name}</td>
+                        <td>${c.email}</td>
+                        <td>${c.orders?.length || 0}</td>
+                        <td>₹${c.wallet || 0}</td>
+                        <td>
+                            <button class="btn btn-small" onclick="openWalletModal(${c.id})">💰 Add Wallet</button>
+                            <button class="btn btn-small" onclick="viewCustomerOrders(${c.id})">📦 View Orders</button>
+                        </td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+    `;
+}
+
+function openWalletModal(customerId) {
+    const customers = getCustomers();
+    const customer = customers.find(c => c.id === customerId);
+    if (!customer) return;
+    
+    const modal = document.createElement('div');
+    modal.className = 'modal active';
+    modal.id = 'walletModal';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width:400px;">
+            <div class="modal-header">
+                <h2>Add to Wallet - ${customer.name}</h2>
+                <button class="modal-close" onclick="closeWalletModal()">&times;</button>
+            </div>
+            <div style="padding:20px;">
+                <p>Current Balance: <strong>₹${customer.wallet || 0}</strong></p>
+                <div class="form-group" style="margin:16px 0;">
+                    <label>Amount to Add (₹)</label>
+                    <input type="number" id="walletAmountInput" class="form-input" min="1" placeholder="Enter amount">
+                </div>
+                <div class="form-group">
+                    <label>Note (Optional)</label>
+                    <input type="text" id="walletNoteInput" class="form-input" placeholder="e.g., Promotional bonus">
+                </div>
+                <div style="display:flex;gap:12px;margin-top:20px;">
+                    <button class="btn btn-primary" onclick="addWalletAmount(${customerId})">Add Amount</button>
+                    <button class="btn" onclick="closeWalletModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+function closeWalletModal() {
+    document.getElementById('walletModal')?.remove();
+}
+
+function addWalletAmount(customerId) {
+    const amount = parseInt(document.getElementById('walletAmountInput').value);
+    const note = document.getElementById('walletNoteInput').value;
+    
+    if (!amount || amount <= 0) {
+        showToast('Please enter a valid amount');
+        return;
+    }
+    
+    const customers = getCustomers();
+    const idx = customers.findIndex(c => c.id === customerId);
+    if (idx === -1) return;
+    
+    customers[idx].wallet = (customers[idx].wallet || 0) + amount;
+    customers[idx].walletHistory = customers[idx].walletHistory || [];
+    customers[idx].walletHistory.unshift({
+        type: 'credit',
+        amount: amount,
+        date: new Date().toISOString(),
+        note: note || 'Added by admin'
+    });
+    
+    saveCustomers(customers);
+    closeWalletModal();
+    renderCustomersAdmin();
+    showToast(`₹${amount} added to ${customers[idx].name}'s wallet!`);
+}
+
+function viewCustomerOrders(customerId) {
+    const customers = getCustomers();
+    const customer = customers.find(c => c.id === customerId);
+    if (!customer) return;
+    
+    const modal = document.createElement('div');
+    modal.className = 'modal active';
+    modal.id = 'ordersModal';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width:600px;max-height:80vh;overflow-y:auto;">
+            <div class="modal-header">
+                <h2>Orders - ${customer.name}</h2>
+                <button class="modal-close" onclick="this.closest('.modal').remove()">&times;</button>
+            </div>
+            <div style="padding:20px;">
+                ${!customer.orders || customer.orders.length === 0 
+                    ? '<p>No orders yet.</p>'
+                    : customer.orders.map(order => `
+                        <div style="border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:16px;">
+                            <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                                <strong>Order #${order.id}</strong>
+                                <span class="order-status ${order.status}">${order.status}</span>
+                            </div>
+                            <div style="font-size:14px;color:var(--text-light);">
+                                ${order.items.map(item => `${item.name} (${item.size}) × ${item.quantity}`).join('<br>')}
+                            </div>
+                            <div style="margin-top:8px;">
+                                <strong>Total: ₹${order.total}${order.walletUsed ? ` (₹${order.walletUsed} from wallet)` : ''}</strong>
+                            </div>
+                            <small style="color:var(--text-light);">${new Date(order.date).toLocaleDateString()}</small>
+                        </div>
+                    `).join('')
+                }
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
 }
 
 // ===== SIZE CATEGORIES =====
@@ -1570,7 +1812,86 @@ function showAccountContent() {
     if (customer) {
         document.getElementById('accountName').textContent = customer.name;
         document.getElementById('accountEmail').textContent = customer.email;
+        document.getElementById('walletBalanceDisplay').textContent = `₹${customer.wallet || 0}`;
+        document.getElementById('walletAmount').textContent = customer.wallet || 0;
+        
+        // Render order history
+        renderOrderHistory(customer);
+        
+        // Render wallet history
+        renderWalletHistory(customer);
+        
+        // Render addresses
+        renderAddressList(customer);
     }
+}
+
+// Show account tab
+function showAccountTab(tab) {
+    document.querySelectorAll('.account-tab-content').forEach(t => t.style.display = 'none');
+    document.getElementById(tab + 'Tab').style.display = 'block';
+}
+
+// Render order history
+function renderOrderHistory(customer) {
+    const container = document.getElementById('orderHistoryList');
+    if (!customer.orders || customer.orders.length === 0) {
+        container.innerHTML = '<p style="color:var(--text-light);">No orders yet.</p>';
+        return;
+    }
+    
+    container.innerHTML = customer.orders.map(order => `
+        <div class="order-history-item">
+            <div class="order-history-header">
+                <strong>Order #${order.id}</strong>
+                <span class="order-status ${order.status}">${order.status}</span>
+            </div>
+            <div class="order-history-items">
+                ${order.items.map(item => `${item.name} × ${item.quantity}`).join('<br>')}
+            </div>
+            <div class="order-history-total">
+                Total: ₹${order.total} ${order.walletUsed ? `(₹${order.walletUsed} from wallet)` : ''}
+            </div>
+            <small style="color:var(--text-light);">${new Date(order.date).toLocaleDateString()}</small>
+        </div>
+    `).join('');
+}
+
+// Render wallet history
+function renderWalletHistory(customer) {
+    const container = document.getElementById('walletHistoryList');
+    if (!customer.walletHistory || customer.walletHistory.length === 0) {
+        container.innerHTML = '<p style="color:var(--text-light);">No transactions yet.</p>';
+        return;
+    }
+    
+    container.innerHTML = '<h4 style="margin:16px 0 8px;">Transaction History</h4>' + 
+        customer.walletHistory.map(tx => `
+            <div class="wallet-history-item">
+                <div>
+                    <div class="type">${tx.type === 'credit' ? '💰 Added' : '🛒 Used'}</div>
+                    <div class="date">${tx.note || new Date(tx.date).toLocaleDateString()}</div>
+                </div>
+                <div class="amount ${tx.type}">${tx.type === 'credit' ? '+' : '-'}₹${tx.amount}</div>
+            </div>
+        `).join('');
+}
+
+// Render address list
+function renderAddressList(customer) {
+    const container = document.getElementById('addressListDisplay');
+    if (!customer.addresses || customer.addresses.length === 0) {
+        container.innerHTML = '<p style="color:var(--text-light);">No addresses saved.</p>';
+        return;
+    }
+    
+    container.innerHTML = customer.addresses.map((addr, i) => `
+        <div style="padding:12px; background:var(--bg-alt); border-radius:8px; margin-bottom:8px;">
+            <strong>${addr.name}</strong><br>
+            ${addr.address}, ${addr.city}, ${addr.state} - ${addr.pincode}<br>
+            Phone: ${addr.phone}
+        </div>
+    `).join('');
 }
 
 // Generate OTP
@@ -1684,7 +2005,9 @@ function verifyOTP(otp) {
             verified: true,
             created: new Date().toISOString(),
             addresses: [],
-            orders: []
+            orders: [],
+            wallet: 0,
+            walletHistory: []
         };
         
         customers.push(newCustomer);
