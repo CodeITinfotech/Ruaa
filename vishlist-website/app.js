@@ -114,11 +114,10 @@ let storeData = {
         { id: 4, name: 'Silk Suits', image: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600' }
     ],
     sizeCategories: [
-        { id: 1, name: 'Clothing Sizes', sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'] },
-        { id: 2, name: 'Footwear', sizes: ['6', '7', '8', '9', '10', '11'] },
-        { id: 3, name: 'Rings', sizes: ['5', '6', '7', '8', '9', '10'] },
-        { id: 4, name: 'Bangles', sizes: ['2.2', '2.4', '2.6', '2.8', '2.10'] },
-        { id: 5, name: 'Waist', sizes: ['26', '28', '30', '32', '34', '36', '38', '40'] }
+        { id: 1, categoryId: 1, name: 'Lawn Suits Sizes', sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'] },
+        { id: 2, categoryId: 2, name: 'Formal Sets Sizes', sizes: ['S', 'M', 'L', 'XL'] },
+        { id: 3, categoryId: 3, name: 'Co-ord Sets Sizes', sizes: ['XS', 'S', 'M', 'L'] },
+        { id: 4, categoryId: 4, name: 'Silk Suits Sizes', sizes: ['S', 'M', 'L', 'XL', 'XXL'] }
     ],
     pages: {
         about: {
@@ -1416,15 +1415,22 @@ function openSizeCategoryModal(id = null) {
     editingSizeCategoryId = id;
     const modal = document.getElementById('sizeCategoryModal');
     const title = document.getElementById('sizeCategoryModalTitle');
+    const categorySelect = document.getElementById('sizeCategoryLink');
+    
+    // Populate category dropdown
+    categorySelect.innerHTML = '<option value="">-- Select Category --</option>' + 
+        storeData.categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
     
     if (id) {
         const sc = storeData.sizeCategories.find(s => s.id === id);
         title.textContent = 'Edit Size Category';
+        document.getElementById('sizeCategoryLink').value = sc.categoryId || '';
         document.getElementById('sizeCategoryName').value = sc.name;
         document.getElementById('sizeCategorySizes').value = sc.sizes.join(', ');
         document.getElementById('sizeCategoryDesc').value = sc.description || '';
     } else {
         title.textContent = 'Add Size Category';
+        document.getElementById('sizeCategoryLink').value = '';
         document.getElementById('sizeCategoryName').value = '';
         document.getElementById('sizeCategorySizes').value = '';
         document.getElementById('sizeCategoryDesc').value = '';
@@ -1441,12 +1447,13 @@ function closeSizeCategoryModal() {
 function saveSizeCategory(e) {
     e.preventDefault();
     
+    const categoryId = parseInt(document.getElementById('sizeCategoryLink').value);
     const name = document.getElementById('sizeCategoryName').value.trim();
     const sizesStr = document.getElementById('sizeCategorySizes').value.trim();
     const description = document.getElementById('sizeCategoryDesc').value.trim();
     
-    if (!name || !sizesStr) {
-        showToast('Please fill required fields');
+    if (!categoryId || !name || !sizesStr) {
+        showToast('Please fill all required fields');
         return;
     }
     
@@ -1461,6 +1468,7 @@ function saveSizeCategory(e) {
         const index = storeData.sizeCategories.findIndex(s => s.id === editingSizeCategoryId);
         storeData.sizeCategories[index] = { 
             ...storeData.sizeCategories[index], 
+            categoryId, 
             name, 
             sizes, 
             description 
@@ -1468,6 +1476,7 @@ function saveSizeCategory(e) {
     } else {
         storeData.sizeCategories.push({ 
             id: Date.now(), 
+            categoryId, 
             name, 
             sizes, 
             description 

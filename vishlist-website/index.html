@@ -517,6 +517,12 @@
                     <form onsubmit="saveSizeCategory(event)">
                         <input type="hidden" id="editingSizeCategoryId">
                         <div class="form-group">
+                            <label>Link to Category *</label>
+                            <select id="sizeCategoryLink" class="form-input" required>
+                                <option value="">-- Select Category --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label>Size Category Name *</label>
                             <input type="text" id="sizeCategoryName" class="form-input" placeholder="e.g., Clothing Sizes, Footwear, Rings" required>
                         </div>
@@ -812,6 +818,6 @@
         <span class="toast-message" id="toastMessage"></span>
     </div>
 
-    <script src="app.js?v=10"></script>
+    <script src="app.js?v=11"></script>
 </body>
 </html>
