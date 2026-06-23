@@ -1396,19 +1396,25 @@ function renderSizeCategories() {
         return;
     }
     
-    container.innerHTML = storeData.sizeCategories.map(sc => `
+    container.innerHTML = storeData.sizeCategories.map(sc => {
+        const category = storeData.categories.find(c => c.id === sc.categoryId);
+        return `
         <div class="category-card">
-            <h3>${sc.name}</h3>
+            <div style="display:flex;justify-content:space-between;align-items:start;">
+                <h3>${sc.name}</h3>
+                ${category ? `<span style="background:var(--primary);color:#fff;padding:2px 8px;border-radius:12px;font-size:11px;">${category.name}</span>` : ''}
+            </div>
             ${sc.description ? `<p style="color: var(--text-light); font-size: 13px; margin-bottom: 8px;">${sc.description}</p>` : ''}
             <div class="sizes-preview">
                 ${sc.sizes.map(s => `<span class="size-chip">${s}</span>`).join('')}
             </div>
+            ${sc.chart ? `<div style="margin-top:8px;"><img src="${sc.chart}" alt="Size Chart" style="height:40px;border-radius:4px;"></div>` : ''}
             <div class="category-actions">
                 <button class="btn btn-sm" onclick="editSizeCategory(${sc.id})">Edit</button>
                 <button class="btn btn-delete btn-sm" onclick="deleteSizeCategory(${sc.id})">Delete</button>
             </div>
         </div>
-    `).join('');
+    `}).join('');
 }
 
 function openSizeCategoryModal(id = null) {
@@ -1427,12 +1433,14 @@ function openSizeCategoryModal(id = null) {
         document.getElementById('sizeCategoryLink').value = sc.categoryId || '';
         document.getElementById('sizeCategoryName').value = sc.name;
         document.getElementById('sizeCategorySizes').value = sc.sizes.join(', ');
+        document.getElementById('sizeCategoryChart').value = sc.chart || '';
         document.getElementById('sizeCategoryDesc').value = sc.description || '';
     } else {
         title.textContent = 'Add Size Category';
         document.getElementById('sizeCategoryLink').value = '';
         document.getElementById('sizeCategoryName').value = '';
         document.getElementById('sizeCategorySizes').value = '';
+        document.getElementById('sizeCategoryChart').value = '';
         document.getElementById('sizeCategoryDesc').value = '';
     }
     
@@ -1450,6 +1458,7 @@ function saveSizeCategory(e) {
     const categoryId = parseInt(document.getElementById('sizeCategoryLink').value);
     const name = document.getElementById('sizeCategoryName').value.trim();
     const sizesStr = document.getElementById('sizeCategorySizes').value.trim();
+    const chart = document.getElementById('sizeCategoryChart').value.trim();
     const description = document.getElementById('sizeCategoryDesc').value.trim();
     
     if (!categoryId || !name || !sizesStr) {
@@ -1471,6 +1480,7 @@ function saveSizeCategory(e) {
             categoryId, 
             name, 
             sizes, 
+            chart, 
             description 
         };
     } else {
@@ -1479,6 +1489,7 @@ function saveSizeCategory(e) {
             categoryId, 
             name, 
             sizes, 
+            chart, 
             description 
         });
     }
